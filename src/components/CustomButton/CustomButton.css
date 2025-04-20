@@ -1,0 +1,29 @@
+.btn-container {
+    width: 100%;
+    padding: 15px;
+    margin: 5px 0;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+  }
+  
+  /* Primary Button */
+  .btn-primary {
+    background-color: #3B71F3;
+    color: white;
+  }
+  
+  /* Secondary Button */
+  .btn-secondary {
+    background-color: transparent;
+    border: 2px solid #3B71F3;
+    color: #3B71F3;
+  }
+  
+  /* Tertiary Button */
+  .btn-tertiary {
+    background-color: transparent;
+    color: gray;
+  }

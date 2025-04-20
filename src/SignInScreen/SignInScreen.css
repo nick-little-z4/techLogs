@@ -1,0 +1,54 @@
+/* SignInScreen.css */
+
+.signin-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 100vw;
+  height: 100vh;
+  padding: 20px;
+
+  background-color: #f9f9f9;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+}
+  
+  .signin-logo {
+    margin-bottom: 15px;
+    object-fit: contain;
+  }
+  
+  /* Optional: override button/input styling if needed */
+  input {
+    width: 100%;
+    max-width: 300px;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  button {
+    width: 100%;
+    max-width: 300px;
+    padding: 12px;
+    margin: 10px 0;
+    background-color: #3b71f3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #2f5ee0;
+  }
+  
+  .tertiary {
+    background-color: transparent;
+    color: gray;
+    text-decoration: underline;
+  }
