@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from "react-router-dom";
 import './Navigation.css';
 
@@ -9,28 +9,35 @@ import EnterpriseLogs from "../Screens/EnterpriseLogs/EnterpriseLogs";
 import TaskLogs from "../Screens/TaskLogs";
 
 const Navigation = ({ userGroups, userAttributes }) => {
+  const [menuOpen, setMenuOpen] = useState(false);
   const isManager = userGroups.includes("Managers");
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
 
   return (
     <Router>
       <nav className="navbar">
-        <Link className="navlink" to="/">Log Entry</Link>
+        <div className="menu-toggle" onClick={toggleMenu}>
+          ☰
+        </div>
+        <div className={`navlinks ${menuOpen ? "open" : ""}`}>
+          <Link className="navlink" to="/" onClick={() => setMenuOpen(false)}>Log Entry</Link>
 
-        {isManager && (
-          <>
-            <Link className="navlink" to="/TechLogs">Tech Logs</Link>
-            <Link className="navlink" to="/SiteTotals">Site Totals</Link>
-            <Link className="navlink" to="/EnterpriseLogs">Enterprise Logs</Link>
-            <Link className="navlink" to="/TaskLogs">Task Logs</Link>
-          </>
-        )}
+          {isManager && (
+            <>
+              <Link className="navlink" to="/TechLogs" onClick={() => setMenuOpen(false)}>Tech Logs</Link>
+              <Link className="navlink" to="/SiteTotals" onClick={() => setMenuOpen(false)}>Site Totals</Link>
+              <Link className="navlink" to="/EnterpriseLogs" onClick={() => setMenuOpen(false)}>Enterprise Logs</Link>
+              <Link className="navlink" to="/TaskLogs" onClick={() => setMenuOpen(false)}>Task Logs</Link>
+            </>
+          )}
+        </div>
       </nav>
 
       <Routes>
-        <Route 
-          path="/" 
-          element={<LogEntry userGroups={userGroups} userAttributes={userAttributes} />} 
-        />
+        <Route path="/" element={<LogEntry userGroups={userGroups} userAttributes={userAttributes} />} />
 
         {isManager ? (
           <>
