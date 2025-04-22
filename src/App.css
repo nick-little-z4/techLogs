@@ -1,6 +1,13 @@
+
+/* App.css */
 .App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensures the app takes up at least the full screen height */
+  background-color: #f5f5f5; /* Or any background color you prefer */
   text-align: center;
 }
+
 
 .App-logo {
   height: 40vmin;
@@ -22,6 +29,11 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+}
+
+main {
+  flex: 1; /* This will make sure the main content stretches to fill remaining space */
+  padding: 0px;
 }
 
 .App-link {

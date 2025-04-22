@@ -4,9 +4,11 @@ import './Navigation.css';
 
 import LogEntry from "../Screens/LogEntry";
 import TechLogs from "../Screens/TechLogs";
-import AnotherScreen from "../Screens/AnotherScreen/index";
+import SiteTotals from "../Screens/SiteTotals";
+import EnterpriseLogs from "../Screens/EnterpriseLogs/EnterpriseLogs";
+import TaskLogs from "../Screens/TaskLogs";
 
-const Navigation = ({ userGroups }) => {
+const Navigation = ({ userGroups, userAttributes }) => {
   const isManager = userGroups.includes("Managers");
 
   return (
@@ -17,24 +19,32 @@ const Navigation = ({ userGroups }) => {
         {isManager && (
           <>
             <Link className="navlink" to="/TechLogs">Tech Logs</Link>
-            <Link className="navlink" to="/AnotherScreen">Another Screen</Link>
+            <Link className="navlink" to="/SiteTotals">Site Totals</Link>
+            <Link className="navlink" to="/EnterpriseLogs">Enterprise Logs</Link>
+            <Link className="navlink" to="/TaskLogs">Task Logs</Link>
           </>
         )}
       </nav>
 
       <Routes>
-        <Route path="/" element={<LogEntry />} />
+        <Route 
+          path="/" 
+          element={<LogEntry userGroups={userGroups} userAttributes={userAttributes} />} 
+        />
 
         {isManager ? (
           <>
-            <Route path="/TechLogs" element={<TechLogs />} />
-            <Route path="/AnotherScreen" element={<AnotherScreen />} />
+            <Route path="/TechLogs" element={<TechLogs userAttributes={userAttributes} />} />
+            <Route path="/SiteTotals" element={<SiteTotals userAttributes={userAttributes} />} />
+            <Route path="/EnterpriseLogs" element={<EnterpriseLogs userAttributes={userAttributes} />} />
+            <Route path="/TaskLogs" element={<TaskLogs userAttributes={userAttributes} />} />
           </>
         ) : (
-          // Optional: redirect techs trying to access manager-only routes
           <>
             <Route path="/TechLogs" element={<Navigate to="/" />} />
-            <Route path="/AnotherScreen" element={<Navigate to="/" />} />
+            <Route path="/SiteTotals" element={<Navigate to="/" />} />
+            <Route path="/EnterpriseLogs" element={<Navigate to="/" />} />
+            <Route path="/TaskLogs" element={<Navigate to="/" />} />
           </>
         )}
       </Routes>

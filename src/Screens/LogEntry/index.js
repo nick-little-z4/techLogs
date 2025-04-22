@@ -3,7 +3,8 @@ import { getCurrentUser, fetchUserAttributes } from '@aws-amplify/auth'; // Impo
 import './LogEntry.css';
 import taskOptions from '../../data/taskOptions';
 
-const LogEntry = () => {
+// const LogEntry = () => {
+const LogEntry = ({ userGroups }) => {
 const [currentUserDisplayName, setCurrentUserDisplayName] = useState('');
 const [date, setDate] = useState('');
 const [locations, setLocations] = useState([]);
@@ -12,42 +13,60 @@ const [enterprise, setEnterprise] = useState('');
 const [task, setTask] = useState('');
 const [comments, setComments] = useState('');
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const user = await getCurrentUser();
-        const userAttributes = await fetchUserAttributes(user);
-        const displayName = userAttributes.displayName || userAttributes.email;
-        setCurrentUserDisplayName(displayName);
-      } catch (err) {
-        console.error('Failed to fetch user:', err);
+useEffect(() => {
+  const fetchUser = async () => {
+    try {
+      const user = await getCurrentUser();
+      const userAttributes = await fetchUserAttributes(user);
+      const displayName = userAttributes.displayName || userAttributes.email;
+      setCurrentUserDisplayName(displayName);
+    } catch (err) {
+      console.error('Failed to fetch user:', err);
+    }
+  };
+
+  const fetchLocations = async () => {
+    try {
+      const response = await fetch('https://i4xtrjux1j.execute-api.us-east-1.amazonaws.com/dev/getLocations');
+      const rawData = await response.json();
+      const parsedBody = typeof rawData.body === 'string' ? JSON.parse(rawData.body) : rawData.body;
+
+      if (!Array.isArray(parsedBody.data)) {
+        console.error('❌ Unexpected response format:', parsedBody);
+        return;
       }
-    };
-  
-    const fetchLocations = async () => {
-      try {
-        const response = await fetch('https://i4xtrjux1j.execute-api.us-east-1.amazonaws.com/dev/getLocations');
-        const rawData = await response.json();
-    
-        // Parse the inner `body` string if it's a string
-        const parsedBody = typeof rawData.body === 'string' ? JSON.parse(rawData.body) : rawData.body;
-    
-        if (Array.isArray(parsedBody.data)) {
-          setLocations(parsedBody.data);
-        } else {
-          console.error('Unexpected response format:', parsedBody);
-        }
-      } catch (error) {
-        console.error('Error fetching locations:', error);
+
+      const allLocations = parsedBody.data;
+      console.log('✅ All locations from API:', allLocations);
+      console.log('🔐 User groups:', userGroups);
+
+      if (userGroups.includes('Managers')) {
+        console.log('👑 User is a manager. Showing all locations.');
+        setLocations(allLocations);
+      } else {
+        const matchingGroups = userGroups.map(group =>
+          allLocations.filter(loc =>
+            loc.enterprise?.toLowerCase().includes(group.toLowerCase())
+          )
+        );
+        const filteredLocations = [].concat(...matchingGroups);
+        setLocations(filteredLocations);
       }
-    };
-  
-    const today = new Date().toISOString().split('T')[0];
-    setDate(today);
-  
-    fetchUser();
+
+    } catch (error) {
+      console.error('❌ Error fetching locations:', error);
+    }
+  };
+
+  const today = new Date().toISOString().split('T')[0];
+  setDate(today);
+
+  fetchUser();
+  if (userGroups && userGroups.length > 0) {
     fetchLocations();
-  }, []);
+  }
+
+}, [userGroups]); // ✅ Now this runs when userGroups becomes available
 
   const callLambda = async () => {
     try {

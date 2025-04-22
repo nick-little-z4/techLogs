@@ -263,10 +263,8 @@ const TechLogs = () => {
 
         </div>
       ))}
-    
-    {/* <button onClick={handleClearFilters} className="clear-button">
-    Clear Filters
-    </button> */}
+      
+    <hr style={{ margin: '30px 0', borderColor: '#eee' }} />
     </div>
   );
 };

@@ -1,0 +1,102 @@
+/* EnterpriseLogs.css */
+
+.enterprise-logs-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #f9fafb;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+  }
+  
+  .controls {
+    margin-bottom: 24px;
+  }
+  
+  h2 {
+    text-align: center;
+    margin-bottom: 16px;
+    color: #1f2937;
+  }
+  
+  .date-range-container,
+  .select-container {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  
+  .input {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+  }
+  
+  .select {
+    flex: 1;
+  }
+  
+  .clear-select-button,
+  .clear-button,
+  .export-button {
+    padding: 10px 14px;
+    margin-top: 8px;
+    margin-right: 8px;
+    font-size: 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .clear-select-button {
+    background-color: #ef4444;
+    color: white;
+  }
+  .clear-select-button:hover {
+    background-color: #dc2626;
+  }
+  
+  .clear-button {
+    background-color: #6b7280;
+    color: white;
+  }
+  .clear-button:hover {
+    background-color: #4b5563;
+  }
+  
+  .export-button {
+    background-color: #10b981;
+    color: white;
+  }
+  .export-button:hover {
+    background-color: #059669;
+  }
+  
+  .log-list-wrapper {
+    max-height: 60vh;
+    overflow-y: auto;
+    background-color: #f3f4f6;
+    padding: 16px;
+    border-radius: 8px;
+  }
+  
+  .log-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .log-entry {
+    background-color: #ffffff;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .log-entry p {
+    margin: 4px 0;
+  }
