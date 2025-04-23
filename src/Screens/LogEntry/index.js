@@ -1,79 +1,85 @@
 import React, { useEffect, useState } from 'react';
-import { getCurrentUser, fetchUserAttributes } from '@aws-amplify/auth'; // Import these functions
+import { getCurrentUser, fetchUserAttributes } from '@aws-amplify/auth';
 import './LogEntry.css';
 import taskOptions from '../../data/taskOptions';
 
-// const LogEntry = () => {
 const LogEntry = ({ userGroups }) => {
-const [currentUserDisplayName, setCurrentUserDisplayName] = useState('');
-const [date, setDate] = useState('');
-const [locations, setLocations] = useState([]);
-const [selectedLocation, setSelectedLocation] = useState('');
-const [enterprise, setEnterprise] = useState('');
-const [task, setTask] = useState('');
-const [comments, setComments] = useState('');
+  const [currentUserDisplayName, setCurrentUserDisplayName] = useState('');
+  const [date, setDate] = useState('');
+  const [locations, setLocations] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState('');
+  const [enterprise, setEnterprise] = useState('');
+  const [task, setTask] = useState('');
+  const [comments, setComments] = useState('');
 
-useEffect(() => {
-  const fetchUser = async () => {
-    try {
-      const user = await getCurrentUser();
-      const userAttributes = await fetchUserAttributes(user);
-      const displayName = userAttributes.displayName || userAttributes.email;
-      setCurrentUserDisplayName(displayName);
-    } catch (err) {
-      console.error('Failed to fetch user:', err);
-    }
-  };
+  const canSubmit = selectedLocation !== '' && task !== '';
 
-  const fetchLocations = async () => {
-    try {
-      const response = await fetch('https://i4xtrjux1j.execute-api.us-east-1.amazonaws.com/dev/getLocations');
-      const rawData = await response.json();
-      const parsedBody = typeof rawData.body === 'string' ? JSON.parse(rawData.body) : rawData.body;
-
-      if (!Array.isArray(parsedBody.data)) {
-        console.error('❌ Unexpected response format:', parsedBody);
-        return;
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const user = await getCurrentUser();
+        const userAttributes = await fetchUserAttributes(user);
+        const displayName = userAttributes.displayName || userAttributes.email;
+        setCurrentUserDisplayName(displayName);
+      } catch (err) {
+        console.error('Failed to fetch user:', err);
       }
+    };
 
-      const allLocations = parsedBody.data;
-      console.log('✅ All locations from API:', allLocations);
-      console.log('🔐 User groups:', userGroups);
+    const fetchLocations = async () => {
+      try {
+        const response = await fetch('https://i4xtrjux1j.execute-api.us-east-1.amazonaws.com/dev/getLocations');
+        const rawData = await response.json();
+        const parsedBody = typeof rawData.body === 'string' ? JSON.parse(rawData.body) : rawData.body;
 
-      if (userGroups.includes('Managers')) {
-        console.log('👑 User is a manager. Showing all locations.');
-        setLocations(allLocations);
-      } else {
-        const matchingGroups = userGroups.map(group =>
-          allLocations.filter(loc =>
-            loc.enterprise?.toLowerCase().includes(group.toLowerCase())
-          )
-        );
-        const filteredLocations = [].concat(...matchingGroups);
-        setLocations(filteredLocations);
+        if (!Array.isArray(parsedBody.data)) {
+          console.error('❌ Unexpected response format:', parsedBody);
+          return;
+        }
+
+        const allLocations = parsedBody.data;
+        console.log('✅ All locations from API:', allLocations);
+        console.log('🔐 User groups:', userGroups);
+
+        if (userGroups.includes('Managers')) {
+          console.log('👑 User is a manager. Showing all locations.');
+          setLocations(allLocations);
+        } else {
+          const matchingGroups = userGroups.map(group =>
+            allLocations.filter(loc =>
+              loc.enterprise?.toLowerCase().includes(group.toLowerCase())
+            )
+          );
+          const filteredLocations = [].concat(...matchingGroups);
+          setLocations(filteredLocations);
+        }
+
+      } catch (error) {
+        console.error('❌ Error fetching locations:', error);
       }
+    };
 
-    } catch (error) {
-      console.error('❌ Error fetching locations:', error);
+    const today = new Date().toISOString().split('T')[0];
+    setDate(today);
+
+    fetchUser();
+    if (userGroups && userGroups.length > 0) {
+      fetchLocations();
     }
-  };
 
-  const today = new Date().toISOString().split('T')[0];
-  setDate(today);
-
-  fetchUser();
-  if (userGroups && userGroups.length > 0) {
-    fetchLocations();
-  }
-
-}, [userGroups]); // ✅ Now this runs when userGroups becomes available
+  }, [userGroups]);
 
   const callLambda = async () => {
+    if (!selectedLocation || !task) {
+      alert('🚫 Please select both a Location and a Task before submitting.');
+      return;
+    }
+
     try {
       const user = await getCurrentUser();
       const userAttributes = await fetchUserAttributes(user);
       const displayName = userAttributes.displayName || userAttributes.email;
-  
+
       const logData = {
         technician_name: displayName,
         date,
@@ -82,7 +88,7 @@ useEffect(() => {
         additional_comments: comments,
         enterprise,
       };
-  
+
       const response = await fetch('https://i4xtrjux1j.execute-api.us-east-1.amazonaws.com/dev/submit-log', {
         method: 'POST',
         headers: {
@@ -90,32 +96,39 @@ useEffect(() => {
         },
         body: JSON.stringify(logData),
       });
-  
+
       const data = await response.json();
-  
+
       if (!response.ok) {
         alert(`❌ Failed to submit log. Status: ${response.status}`);
         return;
       }
-  
+
       const parsedBody = JSON.parse(data.body);
       alert(`✅ ${parsedBody.message}`);
-  
+
     } catch (error) {
       console.error('Network or fetch error:', error);
       alert('❌ Network error while submitting log.');
     }
   };
 
+  const clearForm = () => {
+    setSelectedLocation('');
+    setEnterprise('');
+    setTask('');
+    setComments('');
+  };
+
   return (
     <div className="page-wrapper">
       <div className="form-card">
         <h2 className="form-title">Technician Log Entry</h2>
-  
+
         <span className="user-email">
           {currentUserDisplayName.split('@')[0].replace(/\./g, ' ')}
         </span>
-  
+
         {/* Date Section */}
         <h3 className="section-header">Date</h3>
         <div className="form-group">
@@ -128,7 +141,7 @@ useEffect(() => {
           />
           <p className="form-hint">Format: YYYY-MM-DD</p>
         </div>
-  
+
         {/* Location Section */}
         <h3 className="section-header">Location</h3>
         <div className="form-group">
@@ -151,7 +164,7 @@ useEffect(() => {
             ))}
           </select>
         </div>
-  
+
         {/* Enterprise Section */}
         <h3 className="section-header">Enterprise</h3>
         <div className="form-group">
@@ -163,25 +176,25 @@ useEffect(() => {
             disabled
           />
         </div>
-  
+
         {/* Task Section */}
         <h3 className="section-header">Task</h3>
         <div className="form-group">
-        <label className="form-label">Task</label>
-        <select
-          className="form-input"
-          value={task}
-          onChange={(e) => setTask(e.target.value)}
-        >
-          <option value="">Select Task</option>
-          {taskOptions.map((option, idx) => (
-            <option key={idx} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
-      </div>
-  
+          <label className="form-label">Task</label>
+          <select
+            className="form-input"
+            value={task}
+            onChange={(e) => setTask(e.target.value)}
+          >
+            <option value="">Select Task</option>
+            {taskOptions.map((option, idx) => (
+              <option key={idx} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </div>
+
         {/* Comments Section */}
         <h3 className="section-header">Additional Comments</h3>
         <div className="form-group">
@@ -194,11 +207,14 @@ useEffect(() => {
             onChange={(e) => setComments(e.target.value)}
           ></textarea>
         </div>
-  
-        <button onClick={callLambda} className="submit-btn">Submit Log</button>
-  
-        <hr style={{ margin: '30px 0', borderColor: '#eee' }} />
 
+{/* Clear & Submit Buttons */}
+<div>
+  <button onClick={clearForm}>Clear Form</button>
+  <button onClick={callLambda} disabled={!canSubmit}>Submit Log</button>
+</div>
+
+        <hr style={{ margin: '30px 0', borderColor: '#eee' }} />
       </div>
     </div>
   );
