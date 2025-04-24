@@ -85,12 +85,6 @@ select:focus {
   resize: vertical;
 }
 
-.form-hint {
-  font-size: 12px;
-  color: #888;
-  margin-top: 4px;
-}
-
 /* Buttons */
 .submit-btn {
   width: 100%;

@@ -41,7 +41,8 @@ const LogEntry = ({ userGroups }) => {
         console.log('✅ All locations from API:', allLocations);
         console.log('🔐 User groups:', userGroups);
 
-        if (userGroups.includes('Managers')) {
+        if (userGroups.includes('Managers') || userGroups.includes('Technicians')) {
+          // Your logic for Managers or Technicians group
           console.log('👑 User is a manager. Showing all locations.');
           setLocations(allLocations);
         } else {
@@ -139,7 +140,6 @@ const LogEntry = ({ userGroups }) => {
             value={date}
             onChange={(e) => setDate(e.target.value)}
           />
-          <p className="form-hint">Format: YYYY-MM-DD</p>
         </div>
 
         {/* Location Section */}
