@@ -131,14 +131,21 @@ const TaskLogs = () => {
 
       <div className="controls">
         <div className="date-range-container">
+          {/* Start Date Label and Input */}
+          <label htmlFor="startDate" className="date-label">Start Date</label>
           <input
             type="date"
+            id="startDate"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
             className="input"
           />
+
+          {/* End Date Label and Input */}
+          <label htmlFor="endDate" className="date-label">End Date</label>
           <input
             type="date"
+            id="endDate"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
             className="input"

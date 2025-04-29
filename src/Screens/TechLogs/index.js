@@ -171,25 +171,34 @@ const TechLogs = () => {
   });
 
   return (
-    <div className="container">
-      <h2 className="header">Work Logs</h2>
+<div className="container">
+  <h2 className="header">Tech Logs</h2>
 
-      <div className="date-range-container">
-        <input
-          type="date"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-          className="input"
-          placeholder="Start Date"
-        />
-        <input
-          type="date"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-          className="input"
-          placeholder="End Date"
-        />
-      </div>
+  <div className="date-range-container">
+  <label htmlFor="startDate" className="date-label">Start Date</label>
+    <div className="date-input">
+      <input
+        type="date"
+        value={startDate}
+        onChange={(e) => setStartDate(e.target.value)}
+        className="input"
+        placeholder="Start Date"
+      />
+    </div>
+
+
+    <label htmlFor="startDate" className="date-label">End Date</label>
+    <div className="date-input">
+      <input
+        type="date"
+        value={endDate}
+        onChange={(e) => setEndDate(e.target.value)}
+        className="input"
+        placeholder="End Date"
+      />
+    </div>
+  </div>
+
 
       <div className="quick-range-buttons">
         <button onClick={() => applyQuickRange(15)}>Last 15 Days</button>

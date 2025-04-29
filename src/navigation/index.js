@@ -34,7 +34,7 @@ const Navigation = ({ userGroups, userAttributes }) => {
 
           {isManager && (
             <div className="dropdown">
-              <div className="dropdown-title" onClick={toggleLogs}>
+              <div className="dropdown-title" onClick={toggleLogs} style={{cursor: "pointer"}}>
                 Logs {logsOpen ? "▲" : "▼"}
               </div>
               {logsOpen && (

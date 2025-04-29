@@ -60,6 +60,7 @@
   .dropdown {
     position: relative;
     display: inline-block;
+    cursor: pointer;
   }
   
   .dropdown-title {

@@ -43,7 +43,7 @@ body {
     max-height: 500px;
     overflow-y: auto;
     padding: 1rem;
-    background-color: #5dcf28;
+    background-color: #588f9e;
     border-radius: 8px;
     margin-top: 1rem;
     border: 1px solid #ddd;
@@ -180,7 +180,25 @@ body {
   }
 
   .filtered-count {
-    font-size: 18px;
-    margin-bottom: 15px;
-    color: #333;
-  }
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.date-range-container {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.date-input {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.date-label {
+  margin-top: 5px;
+  font-size: 14px;
+  color: #555;
+}

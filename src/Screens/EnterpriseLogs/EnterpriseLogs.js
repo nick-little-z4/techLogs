@@ -176,47 +176,52 @@ const EnterpriseLogs = () => {
     <h2 className="header">Enterprise Logs</h2>
 
     <div className="controls">
-      <div className="date-range-container">
-        <input
-          type="date"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-          className="input"
-        />
-        <input
-          type="date"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-          className="input"
-        />
-      </div>
+  <div className="date-range-container">
+    <label htmlFor="startDate" className="date-label">Start Date</label>
+    <input
+      type="date"
+      id="startDate"
+      value={startDate}
+      onChange={(e) => setStartDate(e.target.value)}
+      className="input"
+    />
 
-      {/* NEW: Quick Range Buttons */}
-      <div className="quick-range-buttons">
-        <button onClick={() => setPastDays(15)} className="quick-button">Past 15 Days</button>
-        <button onClick={() => setPastDays(30)} className="quick-button">Past 30 Days</button>
-        <button onClick={() => setPastDays(90)} className="quick-button">Past 90 Days</button>
-      </div>
+    <label htmlFor="endDate" className="date-label">End Date</label>
+    <input
+      type="date"
+      id="endDate"
+      value={endDate}
+      onChange={(e) => setEndDate(e.target.value)}
+      className="input"
+    />
+  </div>
+  
+  {/* NEW: Quick Range Buttons */}
+  <div className="quick-range-buttons">
+    <button onClick={() => setPastDays(15)} className="quick-button">Past 15 Days</button>
+    <button onClick={() => setPastDays(30)} className="quick-button">Past 30 Days</button>
+    <button onClick={() => setPastDays(90)} className="quick-button">Past 90 Days</button>
+  </div>
 
-      <div className="select-container">
-        <Select
-          options={enterpriseOptions}
-          onChange={setSearchEnterprise}
-          value={searchEnterprise}
-          placeholder="Select Enterprise"
-          className="select"
-        />
-        {searchEnterprise && (
-          <button className="clear-select-button" onClick={() => setSearchEnterprise(null)}>×</button>
-        )}
-      </div>
+  <div className="select-container">
+    <Select
+      options={enterpriseOptions}
+      onChange={setSearchEnterprise}
+      value={searchEnterprise}
+      placeholder="Select Enterprise"
+      className="select"
+    />
+    {searchEnterprise && (
+      <button className="clear-select-button" onClick={() => setSearchEnterprise(null)}>×</button>
+    )}
+  </div>
 
-      {(startDate || endDate || searchEnterprise) && (
-        <button onClick={handleClearFilters} className="clear-button">
-          Clear Filters
-        </button>
-      )}
-    </div>
+  {(startDate || endDate || searchEnterprise) && (
+    <button onClick={handleClearFilters} className="clear-button">
+      Clear Filters
+    </button>
+  )}
+</div>
   
     <div className="log-section">
   {(startDate && endDate) || searchEnterprise ? (
