@@ -10,31 +10,25 @@ import TaskLogs from "../Screens/TaskLogs";
 
 const Navigation = ({ userGroups, userAttributes }) => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [logsOpen, setLogsOpen] = useState(false); // NEW state for Logs dropdown
+  const [logsOpen, setLogsOpen] = useState(false);
 
   const isManager = userGroups.includes("Managers");
 
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
-
-  const toggleLogs = () => {
-    setLogsOpen(!logsOpen);
-  };
+  const toggleMenu = () => setMenuOpen(!menuOpen);
+  const toggleLogs = () => setLogsOpen(!logsOpen);
 
   return (
     <Router>
       <nav className="navbar">
-        <div className="menu-toggle" onClick={toggleMenu}>
-          ☰
-        </div>
+        <div className="menu-toggle" onClick={toggleMenu}>☰</div>
         <div className={`navlinks ${menuOpen ? "open" : ""}`}>
           <Link className="navlink" to="/" onClick={() => setMenuOpen(false)}>Log Entry</Link>
-          <Link className="navlink" to="/SiteTotals" onClick={() => { setMenuOpen(false); setLogsOpen(false); }}>Site Totals</Link>
-
+          {isManager && (
+            <Link className="navlink" to="/SiteTotals" onClick={() => { setMenuOpen(false); setLogsOpen(false); }}>Site Totals</Link>
+          )}
           {isManager && (
             <div className="dropdown">
-              <div className="dropdown-title" onClick={toggleLogs} style={{cursor: "pointer"}}>
+              <div className="dropdown-title" onClick={toggleLogs} style={{ cursor: "pointer" }}>
                 Logs {logsOpen ? "▲" : "▼"}
               </div>
               {logsOpen && (
@@ -51,21 +45,10 @@ const Navigation = ({ userGroups, userAttributes }) => {
 
       <Routes>
         <Route path="/" element={<LogEntry userGroups={userGroups} userAttributes={userAttributes} />} />
-        {isManager ? (
-          <>
-            <Route path="/SiteTotals" element={<SiteTotals userAttributes={userAttributes} />} />
-            <Route path="/TechLogs" element={<TechLogs userAttributes={userAttributes} />} />
-            <Route path="/EnterpriseLogs" element={<EnterpriseLogs userAttributes={userAttributes} />} />
-            <Route path="/TaskLogs" element={<TaskLogs userAttributes={userAttributes} />} />
-          </>
-        ) : (
-          <>
-            <Route path="/SiteTotals" element={<Navigate to="/" />} />
-            <Route path="/TechLogs" element={<Navigate to="/" />} />
-            <Route path="/EnterpriseLogs" element={<Navigate to="/" />} />
-            <Route path="/TaskLogs" element={<Navigate to="/" />} />
-          </>
-        )}
+        <Route path="/SiteTotals" element={isManager ? <SiteTotals userAttributes={userAttributes} /> : <Navigate to="/" />} />
+        <Route path="/TechLogs" element={isManager ? <TechLogs userAttributes={userAttributes} /> : <Navigate to="/" />} />
+        <Route path="/EnterpriseLogs" element={isManager ? <EnterpriseLogs userAttributes={userAttributes} /> : <Navigate to="/" />} />
+        <Route path="/TaskLogs" element={isManager ? <TaskLogs userAttributes={userAttributes} /> : <Navigate to="/" />} />
       </Routes>
     </Router>
   );
