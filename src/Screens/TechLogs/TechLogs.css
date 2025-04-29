@@ -178,3 +178,9 @@ body {
     align-items: center;
     justify-content: center;
   }
+
+  .filtered-count {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #333;
+  }

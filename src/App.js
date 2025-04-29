@@ -47,15 +47,16 @@ function App() {
         {({ signOut }) => (
           <main className="App-main">
             <header className="App-header">
-              <button
+
+              {userGroups !== null && (
+                <Navigation userGroups={userGroups} userAttributes={userAttributes} />
+              )}
+                          <button
                 onClick={signOut}
                 className="sign-out-button"
               >
                 Sign Out
               </button>
-              {userGroups !== null && (
-                <Navigation userGroups={userGroups} userAttributes={userAttributes} />
-              )}
             </header>
             <div className="App-content">
               {/* Your expanding content like SiteTotals */}

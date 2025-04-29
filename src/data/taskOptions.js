@@ -4,7 +4,8 @@ const taskOptions = [
     'Courtesy Visit / Software update',
     '3rd Party Service',
     'Remote Support',
-    'Conversions / SW Update'
+    'Conversions / SW Update',
+    'Misc / Other'
   ];
   
   export default taskOptions;

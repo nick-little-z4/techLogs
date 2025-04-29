@@ -10,10 +10,16 @@ import TaskLogs from "../Screens/TaskLogs";
 
 const Navigation = ({ userGroups, userAttributes }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [logsOpen, setLogsOpen] = useState(false); // NEW state for Logs dropdown
+
   const isManager = userGroups.includes("Managers");
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
+  };
+
+  const toggleLogs = () => {
+    setLogsOpen(!logsOpen);
   };
 
   return (
@@ -24,32 +30,38 @@ const Navigation = ({ userGroups, userAttributes }) => {
         </div>
         <div className={`navlinks ${menuOpen ? "open" : ""}`}>
           <Link className="navlink" to="/" onClick={() => setMenuOpen(false)}>Log Entry</Link>
+          <Link className="navlink" to="/SiteTotals" onClick={() => { setMenuOpen(false); setLogsOpen(false); }}>Site Totals</Link>
 
           {isManager && (
-            <>
-              <Link className="navlink" to="/TechLogs" onClick={() => setMenuOpen(false)}>Tech Logs</Link>
-              <Link className="navlink" to="/SiteTotals" onClick={() => setMenuOpen(false)}>Site Totals</Link>
-              <Link className="navlink" to="/EnterpriseLogs" onClick={() => setMenuOpen(false)}>Enterprise Logs</Link>
-              <Link className="navlink" to="/TaskLogs" onClick={() => setMenuOpen(false)}>Task Logs</Link>
-            </>
+            <div className="dropdown">
+              <div className="dropdown-title" onClick={toggleLogs}>
+                Logs {logsOpen ? "▲" : "▼"}
+              </div>
+              {logsOpen && (
+                <div className="dropdown-content">
+                  <Link className="navlink" to="/TechLogs" onClick={() => { setMenuOpen(false); setLogsOpen(false); }}>Tech Logs</Link>
+                  <Link className="navlink" to="/EnterpriseLogs" onClick={() => { setMenuOpen(false); setLogsOpen(false); }}>Enterprise Logs</Link>
+                  <Link className="navlink" to="/TaskLogs" onClick={() => { setMenuOpen(false); setLogsOpen(false); }}>Task Logs</Link>
+                </div>
+              )}
+            </div>
           )}
         </div>
       </nav>
 
       <Routes>
         <Route path="/" element={<LogEntry userGroups={userGroups} userAttributes={userAttributes} />} />
-
         {isManager ? (
           <>
-            <Route path="/TechLogs" element={<TechLogs userAttributes={userAttributes} />} />
             <Route path="/SiteTotals" element={<SiteTotals userAttributes={userAttributes} />} />
+            <Route path="/TechLogs" element={<TechLogs userAttributes={userAttributes} />} />
             <Route path="/EnterpriseLogs" element={<EnterpriseLogs userAttributes={userAttributes} />} />
             <Route path="/TaskLogs" element={<TaskLogs userAttributes={userAttributes} />} />
           </>
         ) : (
           <>
-            <Route path="/TechLogs" element={<Navigate to="/" />} />
             <Route path="/SiteTotals" element={<Navigate to="/" />} />
+            <Route path="/TechLogs" element={<Navigate to="/" />} />
             <Route path="/EnterpriseLogs" element={<Navigate to="/" />} />
             <Route path="/TaskLogs" element={<Navigate to="/" />} />
           </>

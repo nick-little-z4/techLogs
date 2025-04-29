@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import './TechLogs.css';
 import { saveAs } from 'file-saver';
-import Papa from 'papaparse';
+import * as XLSX from 'xlsx'; // NEW: Use XLSX instead of PapaParse
 
 const TechLogs = () => {
   const [logs, setLogs] = useState([]);
@@ -71,19 +71,19 @@ const TechLogs = () => {
 
   useEffect(() => {
     let filtered = logs;
-  
+
     if (searchAgent) {
       filtered = filtered.filter(log =>
         log.technician_name.toLowerCase().includes(searchAgent.value.toLowerCase())
       );
     }
-  
+
     if (searchLocation) {
       filtered = filtered.filter(log =>
         (log.location || "").toLowerCase().includes(searchLocation.value.toLowerCase())
       );
     }
-  
+
     if (startDate && endDate) {
       filtered = filtered.filter(log => {
         const logDate = new Date(log.date);
@@ -92,9 +92,7 @@ const TechLogs = () => {
         return logDate >= start && logDate <= end;
       });
     }
-  
-    console.log("Filtered logs:", filtered.length); // Check if anything is coming through
-  
+
     groupLogs(filtered);
   }, [startDate, endDate, searchAgent, searchLocation, logs]);
 
@@ -105,140 +103,159 @@ const TechLogs = () => {
     setSearchLocation(null);
   };
 
-  const handleExportCSV = () => {
+  const handleExportXLSX = () => {
     if (flatFilteredLogs.length === 0) {
       alert("No logs to export.");
       return;
     }
-  
-    const csvData = flatFilteredLogs.map(log => ({
+
+    const exportData = flatFilteredLogs.map(log => ({
       Technician: log.technician_name,
       Location: log.location,
       Date: log.date,
       Task: log.task,
       Comments: log.additional_comments
     }));
-  
-    const csv = Papa.unparse(csvData);
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    saveAs(blob, 'filtered_logs.csv');
+
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Logs");
+
+    const xlsxBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([xlsxBuffer], { type: "application/octet-stream" });
+    saveAs(blob, "filtered_logs.xlsx");
+  };
+
+  const applyQuickRange = (days) => {
+    const end = new Date();
+    const start = new Date();
+    start.setDate(end.getDate() - days);
+
+    setStartDate(start.toISOString().split('T')[0]);
+    setEndDate(end.toISOString().split('T')[0]);
   };
 
   const formatTechnicianName = (email) => {
-    const noDomain = email.split('@')[0]; // remove domain
-    const parts = noDomain.split('.'); // split by dot
+    const noDomain = email.split('@')[0];
+    const parts = noDomain.split('.');
     const capitalized = parts.map(
       part => part.charAt(0).toUpperCase() + part.slice(1)
     );
     return capitalized.join(' ');
   };
-  
+
   const technicianOptions = [...new Set(logs.map(log => log.technician_name))]
     .map(name => ({
       label: formatTechnicianName(name),
-      value: name // keep original email for filtering
+      value: name
     }));
 
   const locationOptions = [...new Set(logs.map(log => log.location))]
     .map(loc => ({ label: loc, value: loc }));
 
-    const flatFilteredLogs = logs.filter(log => {
-        const matchTech = searchAgent
-          ? log.technician_name.toLowerCase().includes(searchAgent.value.toLowerCase())
-          : true;
-      
-        const matchLocation = searchLocation
-          ? (log.location || "").toLowerCase().includes(searchLocation.value.toLowerCase())
-          : true;
-      
-        const matchDate =
-          startDate && endDate
-            ? new Date(log.date) >= new Date(startDate) && new Date(log.date) <= new Date(endDate)
-            : true;
-      
-        return matchTech && matchLocation && matchDate;
-      });
+  const flatFilteredLogs = logs.filter(log => {
+    const matchTech = searchAgent
+      ? log.technician_name.toLowerCase().includes(searchAgent.value.toLowerCase())
+      : true;
+
+    const matchLocation = searchLocation
+      ? (log.location || "").toLowerCase().includes(searchLocation.value.toLowerCase())
+      : true;
+
+    const matchDate =
+      startDate && endDate
+        ? new Date(log.date) >= new Date(startDate) && new Date(log.date) <= new Date(endDate)
+        : true;
+
+    return matchTech && matchLocation && matchDate;
+  });
 
   return (
     <div className="container">
       <h2 className="header">Work Logs</h2>
 
-        <div className="date-range-container">
+      <div className="date-range-container">
         <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            className="input"
-            placeholder="Start Date"
+          type="date"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+          className="input"
+          placeholder="Start Date"
         />
         <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            className="input"
-            placeholder="End Date"
+          type="date"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+          className="input"
+          placeholder="End Date"
         />
-        </div>
+      </div>
 
-        <div className="select-container">
+      <div className="quick-range-buttons">
+        <button onClick={() => applyQuickRange(15)}>Last 15 Days</button>
+        <button onClick={() => applyQuickRange(30)}>Last 30 Days</button>
+        <button onClick={() => applyQuickRange(90)}>Last 90 Days</button>
+      </div>
+
+      <div className="select-container">
         <Select
-            options={technicianOptions}
-            onChange={setSearchAgent}
-            value={searchAgent}
-            placeholder="Select Technician"
-            className="select"
+          options={technicianOptions}
+          onChange={setSearchAgent}
+          value={searchAgent}
+          placeholder="Select Technician"
+          className="select"
         />
         {searchAgent && (
-            <button className="clear-select-button" onClick={() => setSearchAgent(null)}>×</button>
+          <button className="clear-select-button" onClick={() => setSearchAgent(null)}>×</button>
         )}
-        </div>
+      </div>
 
-        <div className="select-container">
+      <div className="select-container">
         <Select
-            options={locationOptions}
-            onChange={setSearchLocation}
-            value={searchLocation}
-            placeholder="Select Location"
-            className="select"
+          options={locationOptions}
+          onChange={setSearchLocation}
+          value={searchLocation}
+          placeholder="Select Location"
+          className="select"
         />
         {searchLocation && (
-            <button className="clear-select-button" onClick={() => setSearchLocation(null)}>×</button>
-        )}        
-        </div>
+          <button className="clear-select-button" onClick={() => setSearchLocation(null)}>×</button>
+        )}
+      </div>
 
-    {(startDate && endDate) || searchAgent || searchLocation ? (
-    <div className="filtered-results">
-        <h2>Filtered Results</h2>
+      {(startDate && endDate) || searchAgent || searchLocation ? (
+        <div className="filtered-results">
+          <h2>Filtered Results</h2>
+          <p className="filtered-count">Total Filtered Logs: {flatFilteredLogs.length}</p>
 
-        {flatFilteredLogs.length > 0 && (
-            <button onClick={handleExportCSV} className="export-button">
-                Export to CSV
+          {flatFilteredLogs.length > 0 && (
+            <button onClick={handleExportXLSX} className="export-button">
+              Export to Excel
             </button>
-            )}
+          )}
 
-        {flatFilteredLogs.length === 0 ? (
-        <p>No logs match your filter.</p>
-        ) : (
-        flatFilteredLogs.map((log, index) => (
-            <div key={index} className="filtered-log-item">
-            <h4 className="location-header">{log.location}</h4>
-            <h4 className="agent-header">{log.technician_name}</h4>
-            <div className="log-details">
-                <div className="log-detail"><strong>Date:</strong> {log.date}</div>
-                <div className="log-detail"><strong>Task:</strong> {log.task}</div>
-                <div className="log-detail"><strong>Comments:</strong> {log.additional_comments}</div>
-            </div>
-            <hr className="divider" />
-            </div>
-        ))
-        )}        
-    </div>
-    ) : null}
+          {flatFilteredLogs.length === 0 ? (
+            <p>No logs match your filter.</p>
+          ) : (
+            flatFilteredLogs.map((log, index) => (
+              <div key={index} className="filtered-log-item">
+                <h4 className="location-header">{log.location}</h4>
+                <h4 className="agent-header">{log.technician_name}</h4>
+                <div className="log-details">
+                  <div className="log-detail"><strong>Date:</strong> {log.date}</div>
+                  <div className="log-detail"><strong>Task:</strong> {log.task}</div>
+                  <div className="log-detail"><strong>Comments:</strong> {log.additional_comments}</div>
+                </div>
+                <hr className="divider" />
+              </div>
+            ))
+          )}
+        </div>
+      ) : null}
 
-
-    <button onClick={handleClearFilters} className="clear-button">
-    Clear Filters
-    </button>
+      <button onClick={handleClearFilters} className="clear-button">
+        Clear Filters
+      </button>
 
       {filteredLogs.map((techGroup, idx) => (
         <div key={idx} className="tech-group">
@@ -260,11 +277,10 @@ const TechLogs = () => {
               ))}
             </div>
           ))}
-
         </div>
       ))}
-      
-    <hr style={{ margin: '30px 0', borderColor: '#eee' }} />
+
+      <hr style={{ margin: '30px 0', borderColor: '#eee' }} />
     </div>
   );
 };

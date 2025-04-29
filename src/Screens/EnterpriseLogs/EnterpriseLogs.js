@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import './EnterpriseLogs.css';
 import { saveAs } from 'file-saver';
-import Papa from 'papaparse';
+import * as XLSX from 'xlsx'; // NEW: XLSX for Excel file generation
 
 const EnterpriseLogs = () => {
   const [logs, setLogs] = useState([]);
@@ -86,24 +86,64 @@ const EnterpriseLogs = () => {
     setSearchEnterprise(null);
   };
 
-  const handleExportCSV = () => {
+  const handleExportXLSX = () => {
     if (flatFilteredLogs.length === 0) {
       alert("No logs to export.");
       return;
     }
-
-    const csvData = flatFilteredLogs.map(log => ({
-      Enterprise: log.enterprise,
-      Technician: log.technician_name,
-      Location: log.location,
-      Date: log.date,
-      Task: log.task,
-      Comments: log.additional_comments
+  
+    // Group by Enterprise + Location + Task
+    const groupedData = {};
+  
+    flatFilteredLogs.forEach(log => {
+      const key = `${log.enterprise}|${log.location}|${log.task}`;
+      if (!groupedData[key]) {
+        groupedData[key] = {
+          Enterprise: log.enterprise,
+          Location: log.location,
+          Task: log.task,
+          Count: 1,
+          Comments: log.additional_comments || '',
+          Technicians: log.technician_name ? [log.technician_name] : []
+        };
+      } else {
+        groupedData[key].Count += 1;
+        if (log.technician_name) {
+          groupedData[key].Technicians.push(log.technician_name);
+        }
+        if (log.additional_comments) {
+          groupedData[key].Comments += ` | ${log.additional_comments}`;
+        }
+      }
+    });
+  
+    const exportData = Object.values(groupedData).map(item => ({
+      Enterprise: item.Enterprise,
+      Location: item.Location,
+      Task: item.Task,
+      Visit_Count: item.Count,
+      Technicians: [...new Set(item.Technicians)].join(', '),
+      Comments: item.Comments
     }));
-
-    const csv = Papa.unparse(csvData);
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    saveAs(blob, 'enterprise_logs.csv');
+  
+    // 🆕 Add a total row
+    const totalVisits = exportData.reduce((sum, item) => sum + item.Visit_Count, 0);
+    exportData.push({
+      Enterprise: 'TOTAL VISIT COUNT',
+      Location: '',
+      Task: '',
+      Visit_Count: totalVisits,
+      Technicians: '',
+      Comments: ''
+    });
+  
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Enterprise Logs');
+  
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
+    saveAs(data, 'enterprise_logs.xlsx');
   };
 
   const enterpriseOptions = [...new Set(logs.map(log => log.enterprise))]
@@ -122,105 +162,125 @@ const EnterpriseLogs = () => {
     return matchEnterprise && matchDate;
   });
 
+  const setPastDays = (days) => {
+    const today = new Date();
+    const pastDate = new Date();
+    pastDate.setDate(today.getDate() - days);
+  
+    setStartDate(pastDate.toISOString().split('T')[0]);
+    setEndDate(today.toISOString().split('T')[0]);
+  };
+
   return (
     <div className="container">
-      <h2 className="header">Enterprise Logs</h2>
-  
-      <div className="controls">
-        <div className="date-range-container">
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            className="input"
-          />
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            className="input"
-          />
-        </div>
-  
-        <div className="select-container">
-          <Select
-            options={enterpriseOptions}
-            onChange={setSearchEnterprise}
-            value={searchEnterprise}
-            placeholder="Select Enterprise"
-            className="select"
-          />
-          {searchEnterprise && (
-            <button className="clear-select-button" onClick={() => setSearchEnterprise(null)}>×</button>
-          )}
-        </div>
-  
-        {(startDate || endDate || searchEnterprise) && (
-          <button onClick={handleClearFilters} className="clear-button">
-            Clear Filters
-          </button>
+    <h2 className="header">Enterprise Logs</h2>
+
+    <div className="controls">
+      <div className="date-range-container">
+        <input
+          type="date"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+          className="input"
+        />
+        <input
+          type="date"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+          className="input"
+        />
+      </div>
+
+      {/* NEW: Quick Range Buttons */}
+      <div className="quick-range-buttons">
+        <button onClick={() => setPastDays(15)} className="quick-button">Past 15 Days</button>
+        <button onClick={() => setPastDays(30)} className="quick-button">Past 30 Days</button>
+        <button onClick={() => setPastDays(90)} className="quick-button">Past 90 Days</button>
+      </div>
+
+      <div className="select-container">
+        <Select
+          options={enterpriseOptions}
+          onChange={setSearchEnterprise}
+          value={searchEnterprise}
+          placeholder="Select Enterprise"
+          className="select"
+        />
+        {searchEnterprise && (
+          <button className="clear-select-button" onClick={() => setSearchEnterprise(null)}>×</button>
         )}
       </div>
+
+      {(startDate || endDate || searchEnterprise) && (
+        <button onClick={handleClearFilters} className="clear-button">
+          Clear Filters
+        </button>
+      )}
+    </div>
   
-      <div className="log-section">
-        {(startDate && endDate) || searchEnterprise ? (
-          <div className="filtered-results">
-            <h3>Filtered Results</h3>
-  
-            {flatFilteredLogs.length > 0 && (
-              <button onClick={handleExportCSV} className="export-button">
-                Export to CSV
-              </button>
-            )}
-  
-            {flatFilteredLogs.length === 0 ? (
-              <p>No logs match your filter.</p>
-            ) : (
-              flatFilteredLogs.map((log, index) => (
-                <div key={index} className="filtered-log-item">
-                  <h4 className="enterprise-header">{log.enterprise}</h4>
-                  <div className="log-details">
-                    <div className="log-detail"><strong>Date:</strong> {log.date}</div>
-                    <div className="log-detail"><strong>Technician:</strong> {log.technician_name}</div>
-                    <div className="log-detail"><strong>Location:</strong> {log.location}</div>
-                    <div className="log-detail"><strong>Task:</strong> {log.task}</div>
-                    <div className="log-detail"><strong>Comments:</strong> {log.additional_comments}</div>
-                  </div>
-                  <hr className="divider" />
-                </div>
-              ))
-            )}
+    <div className="log-section">
+  {(startDate && endDate) || searchEnterprise ? (
+    <div className="filtered-results">
+      <h3>Filtered Results</h3>
+
+      <p className="results-count">Results Found: {flatFilteredLogs.length}</p> {/* NEW: Results Count */}
+
+      {flatFilteredLogs.length > 0 && (
+        <button onClick={handleExportXLSX} className="export-button">
+          Export to Excel
+        </button>
+      )}
+
+      {flatFilteredLogs.length === 0 ? (
+        <p>No logs match your filter.</p>
+      ) : (
+        flatFilteredLogs.map((log, index) => (
+          <div key={index} className="filtered-log-item">
+            <h4 className="enterprise-header">{log.enterprise}</h4>
+            <div className="log-details">
+              <div className="log-detail"><strong>Date:</strong> {log.date}</div>
+              <div className="log-detail"><strong>Technician:</strong> {log.technician_name}</div>
+              <div className="log-detail"><strong>Location:</strong> {log.location}</div>
+              <div className="log-detail"><strong>Task:</strong> {log.task}</div>
+              <div className="log-detail"><strong>Comments:</strong> {log.additional_comments}</div>
+            </div>
+            <hr className="divider" />
           </div>
-        ) : (
-<div className="filtered-results">
-  <h3>All Results</h3>
-
-  {flatFilteredLogs.length > 0 && (
-    <button onClick={handleExportCSV} className="export-button">
-      Export to CSV
-    </button>
-  )}
-
-  {flatFilteredLogs.length === 0 ? (
-    <p>No logs available.</p>
+        ))
+      )}
+    </div>
   ) : (
-    flatFilteredLogs.map((log, index) => (
-      <div key={index} className="filtered-log-item">
-        <h4 className="enterprise-header">{log.enterprise}</h4>
-        <div className="log-details">
-          <div className="log-detail"><strong>Date:</strong> {log.date}</div>
-          <div className="log-detail"><strong>Technician:</strong> {log.technician_name}</div>
-          <div className="log-detail"><strong>Location:</strong> {log.location}</div>
-          <div className="log-detail"><strong>Task:</strong> {log.task}</div>
-          <div className="log-detail"><strong>Comments:</strong> {log.additional_comments}</div>
-        </div>
-        <hr className="divider" />
-      </div>
-          ))
-        )}
-      </div>
-        )}
-      </div>
+    <div className="filtered-results">
+      <h3>All Results</h3>
+
+      <p className="results-count">Results Found: {flatFilteredLogs.length}</p> {/* NEW: Results Count */}
+
+      {flatFilteredLogs.length > 0 && (
+        <button onClick={handleExportXLSX} className="export-button">
+          Export to Excel
+        </button>
+      )}
+
+      {flatFilteredLogs.length === 0 ? (
+        <p>No logs available.</p>
+      ) : (
+        flatFilteredLogs.map((log, index) => (
+          <div key={index} className="filtered-log-item">
+            <h4 className="enterprise-header">{log.enterprise}</h4>
+            <div className="log-details">
+              <div className="log-detail"><strong>Date:</strong> {log.date}</div>
+              <div className="log-detail"><strong>Technician:</strong> {log.technician_name}</div>
+              <div className="log-detail"><strong>Location:</strong> {log.location}</div>
+              <div className="log-detail"><strong>Task:</strong> {log.task}</div>
+              <div className="log-detail"><strong>Comments:</strong> {log.additional_comments}</div>
+            </div>
+            <hr className="divider" />
+          </div>
+        ))
+      )}
+    </div>
+  )}
+</div>
 
       <hr style={{ margin: '30px 0', borderColor: '#eee' }} />
     </div>

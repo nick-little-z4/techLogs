@@ -1,39 +1,52 @@
-/* EnterpriseLogs.css */
+/* EnterpriseLogs.css (Updated) */
 
 .enterprise-logs-container {
     max-width: 1000px;
     margin: 40px auto;
-    padding: 20px;
+    padding: 24px;
     background-color: #f9fafb;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     overflow: hidden;
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .enterprise-logs-container:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  }
+  
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #1f2937;
+    font-size: 28px;
   }
   
   .controls {
     margin-bottom: 24px;
   }
   
-  h2 {
-    text-align: center;
-    margin-bottom: 16px;
-    color: #1f2937;
-  }
-  
   .date-range-container,
   .select-container {
     display: flex;
     gap: 12px;
+    flex-wrap: wrap;
     margin-bottom: 16px;
   }
   
   .input {
     flex: 1;
-    padding: 10px;
+    padding: 12px;
     font-size: 16px;
     border: 1px solid #d1d5db;
-    border-radius: 6px;
+    border-radius: 8px;
+    transition: border-color 0.2s ease;
+  }
+  
+  .input:focus {
+    outline: none;
+    border-color: #3b82f6;
   }
   
   .select {
@@ -43,13 +56,12 @@
   .clear-select-button,
   .clear-button,
   .export-button {
-    padding: 10px 14px;
-    margin-top: 8px;
-    margin-right: 8px;
+    padding: 10px 16px;
     font-size: 15px;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
+    transition: background-color 0.25s ease, transform 0.25s ease;
   }
   
   .clear-select-button {
@@ -58,6 +70,7 @@
   }
   .clear-select-button:hover {
     background-color: #dc2626;
+    transform: translateY(-2px);
   }
   
   .clear-button {
@@ -66,6 +79,7 @@
   }
   .clear-button:hover {
     background-color: #4b5563;
+    transform: translateY(-2px);
   }
   
   .export-button {
@@ -74,29 +88,47 @@
   }
   .export-button:hover {
     background-color: #059669;
+    transform: translateY(-2px);
   }
   
   .log-list-wrapper {
-    max-height: 60vh;
+    max-height: 65vh;
     overflow-y: auto;
     background-color: #f3f4f6;
-    padding: 16px;
-    border-radius: 8px;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
   }
   
   .log-list {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 20px;
   }
   
   .log-entry {
     background-color: #ffffff;
-    padding: 16px;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 18px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .log-entry:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   
   .log-entry p {
-    margin: 4px 0;
+    margin: 6px 0;
+    font-size: 15px;
+    color: #374151;
   }
+
+  .results-count {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  

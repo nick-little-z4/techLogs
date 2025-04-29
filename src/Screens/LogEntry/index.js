@@ -7,8 +7,16 @@ const LogEntry = ({ userGroups }) => {
   const [currentUserDisplayName, setCurrentUserDisplayName] = useState('');
   const [date, setDate] = useState('');
   const [locations, setLocations] = useState([]);
+
+  const [states, setStates] = useState([]);
+  const [selectedState, setSelectedState] = useState('');
+
+  const [enterprises, setEnterprises] = useState([]);
+  const [selectedEnterprise, setSelectedEnterprise] = useState('');
+
+  const [filteredLocations, setFilteredLocations] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState('');
-  const [enterprise, setEnterprise] = useState('');
+
   const [task, setTask] = useState('');
   const [comments, setComments] = useState('');
 
@@ -37,23 +45,23 @@ const LogEntry = ({ userGroups }) => {
           return;
         }
 
-        const allLocations = parsedBody.data;
-        console.log('✅ All locations from API:', allLocations);
-        console.log('🔐 User groups:', userGroups);
+        let allLocations = parsedBody.data;
 
-        if (userGroups.includes('Managers') || userGroups.includes('Technicians')) {
-          // Your logic for Managers or Technicians group
-          console.log('👑 User is a manager. Showing all locations.');
-          setLocations(allLocations);
-        } else {
-          const matchingGroups = userGroups.map(group =>
-            allLocations.filter(loc =>
-              loc.enterprise?.toLowerCase().includes(group.toLowerCase())
-            )
-          );
-          const filteredLocations = [].concat(...matchingGroups);
-          setLocations(filteredLocations);
-        }
+        // if (userGroups.includes('Managers') || userGroups.includes('Technicians')) {
+        //   console.log('👑 User is a manager. Showing all locations.');
+        // } else {
+        //   const matchingGroups = userGroups.map(group =>
+        //     allLocations.filter(loc =>
+        //       loc.enterprise?.toLowerCase().includes(group.toLowerCase())
+        //     )
+        //   );
+        //   allLocations = [].concat(...matchingGroups);
+        // }
+
+        setLocations(allLocations);
+
+        const uniqueStates = [...new Set(allLocations.map(loc => loc.state).filter(Boolean))];
+        setStates(uniqueStates.sort());
 
       } catch (error) {
         console.error('❌ Error fetching locations:', error);
@@ -70,9 +78,42 @@ const LogEntry = ({ userGroups }) => {
 
   }, [userGroups]);
 
+  useEffect(() => {
+    // Reset downstream fields when State changes
+    if (selectedState) {
+      const enterpriseList = locations
+        .filter(loc => loc.state === selectedState)
+        .map(loc => loc.enterprise);
+
+      const uniqueEnterprises = [...new Set(enterpriseList)];
+      setEnterprises(uniqueEnterprises.sort());
+      setSelectedEnterprise('');
+      setSelectedLocation('');
+    } else {
+      setEnterprises([]);
+      setSelectedEnterprise('');
+      setFilteredLocations([]);
+      setSelectedLocation('');
+    }
+  }, [selectedState, locations]);
+
+  useEffect(() => {
+    // Reset locations when Enterprise changes
+    if (selectedEnterprise) {
+      const locs = locations.filter(
+        loc => loc.state === selectedState && loc.enterprise === selectedEnterprise
+      );
+      setFilteredLocations(locs);
+      setSelectedLocation('');
+    } else {
+      setFilteredLocations([]);
+      setSelectedLocation('');
+    }
+  }, [selectedEnterprise, selectedState, locations]);
+
   const callLambda = async () => {
     if (!selectedLocation || !task) {
-      alert('🚫 Please select both a Location and a Task before submitting.');
+      alert('🚫 Please select a Location and a Task before submitting.');
       return;
     }
 
@@ -87,7 +128,8 @@ const LogEntry = ({ userGroups }) => {
         location: selectedLocation,
         task,
         additional_comments: comments,
-        enterprise,
+        enterprise: selectedEnterprise,
+        state: selectedState,
       };
 
       const response = await fetch('https://i4xtrjux1j.execute-api.us-east-1.amazonaws.com/dev/submit-log', {
@@ -107,6 +149,7 @@ const LogEntry = ({ userGroups }) => {
 
       const parsedBody = JSON.parse(data.body);
       alert(`✅ ${parsedBody.message}`);
+      clearForm();
 
     } catch (error) {
       console.error('Network or fetch error:', error);
@@ -115,8 +158,9 @@ const LogEntry = ({ userGroups }) => {
   };
 
   const clearForm = () => {
+    setSelectedState('');
+    setSelectedEnterprise('');
     setSelectedLocation('');
-    setEnterprise('');
     setTask('');
     setComments('');
   };
@@ -142,24 +186,19 @@ const LogEntry = ({ userGroups }) => {
           />
         </div>
 
-        {/* Location Section */}
-        <h3 className="section-header">Location</h3>
+        {/* State Section */}
+        <h3 className="section-header">State</h3>
         <div className="form-group">
-          <label className="form-label">Location</label>
+          <label className="form-label">State</label>
           <select
             className="form-input"
-            value={selectedLocation}
-            onChange={(e) => {
-              const selected = e.target.value;
-              setSelectedLocation(selected);
-              const match = locations.find(loc => loc.location === selected);
-              setEnterprise(match ? match.enterprise : '');
-            }}
+            value={selectedState}
+            onChange={(e) => setSelectedState(e.target.value)}
           >
-            <option value="">Select Location</option>
-            {(locations || []).map((loc, idx) => (
-              <option key={idx} value={loc.location}>
-                {loc.location}
+            <option value="">Select State</option>
+            {states.map((state, idx) => (
+              <option key={idx} value={state}>
+                {state}
               </option>
             ))}
           </select>
@@ -169,12 +208,38 @@ const LogEntry = ({ userGroups }) => {
         <h3 className="section-header">Enterprise</h3>
         <div className="form-group">
           <label className="form-label">Enterprise</label>
-          <input
-            type="text"
+          <select
             className="form-input"
-            value={enterprise}
-            disabled
-          />
+            value={selectedEnterprise}
+            onChange={(e) => setSelectedEnterprise(e.target.value)}
+            disabled={!selectedState}
+          >
+            <option value="">Select Enterprise</option>
+            {enterprises.map((ent, idx) => (
+              <option key={idx} value={ent}>
+                {ent}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Location Section */}
+        <h3 className="section-header">Location</h3>
+        <div className="form-group">
+          <label className="form-label">Location</label>
+          <select
+            className="form-input"
+            value={selectedLocation}
+            onChange={(e) => setSelectedLocation(e.target.value)}
+            disabled={!selectedEnterprise}
+          >
+            <option value="">Select Location</option>
+            {filteredLocations.map((loc, idx) => (
+              <option key={idx} value={loc.location}>
+                {loc.location}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* Task Section */}
@@ -208,11 +273,11 @@ const LogEntry = ({ userGroups }) => {
           ></textarea>
         </div>
 
-{/* Clear & Submit Buttons */}
-<div>
-  <button onClick={clearForm}>Clear Form</button>
-  <button onClick={callLambda} disabled={!canSubmit}>Submit Log</button>
-</div>
+        {/* Clear & Submit Buttons */}
+        <div className="button-group">
+          <button onClick={clearForm}>Clear Form</button>
+          <button onClick={callLambda} disabled={!canSubmit}>Submit Log</button>
+        </div>
 
         <hr style={{ margin: '30px 0', borderColor: '#eee' }} />
       </div>
