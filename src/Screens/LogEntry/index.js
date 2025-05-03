@@ -266,31 +266,30 @@ const LogEntry = ({ userGroups }) => {
 
         {/* Task Section */}
         <h3 className="section-header">Task</h3>
-<div className="form-group">
-  <label className="form-label">Select Tasks</label>
-  <div className="checkbox-scroll-container">
-    {taskOptions.map((option, idx) => (
-      <div key={idx} className="checkbox-item">
-        <label>
-          <input
-            type="checkbox"
-            value={option}
-            checked={task.includes(option)}
-            onChange={(e) => {
-              const value = e.target.value;
-              setTask(prev =>
-                prev.includes(value)
-                  ? prev.filter(t => t !== value)
-                  : [...prev, value]
-              );
-            }}
-          />
-          {option}
-        </label>
-      </div>
-    ))}
-  </div>
-</div>
+        <div className="form-group">
+          <div className="checkbox-scroll-container">
+            {taskOptions.map((option, idx) => (
+              <div key={idx} className="checkbox-item">
+                <label>
+                  <input
+                    type="checkbox"
+                    value={option}
+                    checked={task.includes(option)}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setTask(prev =>
+                        prev.includes(value)
+                          ? prev.filter(t => t !== value)
+                          : [...prev, value]
+                      );
+                    }}
+                  />
+                  {option}
+                </label>
+              </div>
+            ))}
+          </div>
+        </div>
 
         {/* Comments Section */}
         <h3 className="section-header">Additional Comments</h3>
