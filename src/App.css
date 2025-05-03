@@ -31,6 +31,34 @@
   color: white;
 }
 
+.logs-container {
+  background-color: #f8f9fa; /* light background */
+  padding: 1rem;
+  border-radius: 8px;
+  color: #212529; /* dark font */
+  font-size: medium;
+}
+
+.log-entry {
+  background-color: white;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  color: #212529; /* ensure text is visible */
+}
+
+.logs-container h4 {
+  margin-bottom: 0.1rem; /* adjust as needed */
+}
+
+.scrollable-logs {
+  max-height: 150px; /* or any height you want */
+  overflow-y: auto;
+  padding-right: 10px; /* optional, for scrollbar space */
+  border: 10px solid #3182ceb7; /* optional, for visual boundary */
+}
+
 main {
   flex: 1; /* This will make sure the main content stretches to fill remaining space */
   padding: 0px;
@@ -38,6 +66,21 @@ main {
 
 .App-link {
   color: #61dafb;
+}
+
+.checkbox-scroll-container {
+  max-height: 150px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  color: #333; /* <-- Ensure readable font color */
+  font-size: small;
+}
+
+.checkbox-item label {
+  color: #333; /* Explicit label color in case inherited */
 }
 
 @keyframes App-logo-spin {
