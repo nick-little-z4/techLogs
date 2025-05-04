@@ -103,11 +103,15 @@ const EnterpriseLogs = () => {
           Location: log.location,
           Task: log.task,
           Count: 1,
+          Dates: log.date ? [log.date] : [],
           Comments: log.additional_comments || '',
           Technicians: log.technician_name ? [log.technician_name] : []
         };
       } else {
         groupedData[key].Count += 1;
+        if (log.date) {
+          groupedData[key].Dates.push(log.date);
+        }
         if (log.technician_name) {
           groupedData[key].Technicians.push(log.technician_name);
         }
@@ -118,6 +122,7 @@ const EnterpriseLogs = () => {
     });
   
     const exportData = Object.values(groupedData).map(item => ({
+      Date: [...new Set(item.Dates)].map(d => new Date(d).toLocaleDateString()).join(', '),
       Enterprise: item.Enterprise,
       Location: item.Location,
       Task: item.Task,
@@ -243,7 +248,7 @@ const EnterpriseLogs = () => {
           <div key={index} className="filtered-log-item">
             <h4 className="enterprise-header">{log.enterprise}</h4>
             <div className="log-details">
-              <div className="log-detail"><strong>Date:</strong> {log.date}</div>
+              <div className="log-detail"><strong>Date:</strong> {new Date(log.date).toLocaleDateString()}</div>
               <div className="log-detail"><strong>Technician:</strong> {log.technician_name}</div>
               <div className="log-detail"><strong>Location:</strong> {log.location}</div>
               <div className="log-detail"><strong>Task:</strong> {log.task}</div>
@@ -273,7 +278,7 @@ const EnterpriseLogs = () => {
           <div key={index} className="filtered-log-item">
             <h4 className="enterprise-header">{log.enterprise}</h4>
             <div className="log-details">
-              <div className="log-detail"><strong>Date:</strong> {log.date}</div>
+              <div className="log-detail"><strong>Date:</strong> {new Date(log.date).toLocaleDateString()}</div>
               <div className="log-detail"><strong>Technician:</strong> {log.technician_name}</div>
               <div className="log-detail"><strong>Location:</strong> {log.location}</div>
               <div className="log-detail"><strong>Task:</strong> {log.task}</div>

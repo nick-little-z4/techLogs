@@ -108,19 +108,21 @@ const TechLogs = () => {
       alert("No logs to export.");
       return;
     }
-
+  
     const exportData = flatFilteredLogs.map(log => ({
       Technician: log.technician_name,
       Location: log.location,
-      Date: log.date,
+      Date: new Date(log.date).toLocaleDateString(), // Format date
       Task: log.task,
-      Comments: log.additional_comments
+      Comments: log.additional_comments,
+      'Arrival Time': log.arrival_time || '',       // Optional field
+      'Departure Time': log.departure_time || '',   // Optional field
     }));
-
+  
     const worksheet = XLSX.utils.json_to_sheet(exportData);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Logs");
-
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Tech Logs");
+  
     const xlsxBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
     const blob = new Blob([xlsxBuffer], { type: "application/octet-stream" });
     saveAs(blob, "filtered_logs.xlsx");
@@ -251,7 +253,7 @@ const TechLogs = () => {
                 <h4 className="location-header">{log.location}</h4>
                 <h4 className="agent-header">{log.technician_name}</h4>
                 <div className="log-details">
-                  <div className="log-detail"><strong>Date:</strong> {log.date}</div>
+                  <div className="log-detail"><strong>Date:</strong> {new Date(log.date).toLocaleDateString()}</div>                  
                   <div className="log-detail"><strong>Task:</strong> {log.task}</div>
                   <div className="log-detail"><strong>Comments:</strong> {log.additional_comments}</div>
                 </div>

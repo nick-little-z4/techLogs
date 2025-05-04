@@ -83,7 +83,8 @@ const TaskLogs = () => {
           Task: log.task,
           Count: 1,
           Comments: log.additional_comments || '',
-          Technicians: log.technician_name ? [log.technician_name] : []
+          Technicians: log.technician_name ? [log.technician_name] : [],
+          Dates: log.date ? [new Date(log.date).toLocaleDateString()] : [],
         };
       } else {
         groupedData[key].Count += 1;
@@ -93,32 +94,37 @@ const TaskLogs = () => {
         if (log.additional_comments) {
           groupedData[key].Comments += ` | ${log.additional_comments}`;
         }
+        if (log.date) {
+          groupedData[key].Dates.push(new Date(log.date).toLocaleDateString());
+        }
       }
     });
-  
+    
     const exportData = Object.values(groupedData).map(item => ({
       Enterprise: item.Enterprise,
       Location: item.Location,
       Task: item.Task,
-      Task_Count: item.Count, // 🔥 changed from Visit_Count to Task_Count
+      Task_Count: item.Count,
+      Date: [...new Set(item.Dates)].join(', '), // Already formatted, no need for new Date()
       Technicians: [...new Set(item.Technicians)].join(', '),
       Comments: item.Comments
     }));
   
-    // 🆕 Add a total row
+    // Add total row
     const totalTasks = exportData.reduce((sum, item) => sum + item.Task_Count, 0);
     exportData.push({
-      Enterprise: 'TOTAL TASK COUNT', // 🔥 also updated
+      Enterprise: 'TOTAL TASK COUNT',
       Location: '',
       Task: '',
-      Task_Count: totalTasks, // 🔥 changed here too
+      Task_Count: totalTasks,
+      Dates: '',
       Technicians: '',
       Comments: ''
     });
   
     const worksheet = XLSX.utils.json_to_sheet(exportData);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Enterprise Logs');
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Tasks Logs');
   
     const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
     const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
@@ -127,7 +133,7 @@ const TaskLogs = () => {
 
   return (
     <div className="container">
-      <h2 className="header">Task Logs</h2>
+      <h2 className="header">Tasks Logs</h2>
 
       <div className="controls">
         <div className="date-range-container">
@@ -199,7 +205,7 @@ const TaskLogs = () => {
               <div key={index} className="filtered-log-item">
                 <h4 className="task-header">{log.task}</h4>
                 <div className="log-details">
-                  <div className="log-detail"><strong>Date:</strong> {log.date}</div>
+                  <div className="log-detail"><strong>Date:</strong> {new Date(log.date).toLocaleDateString()}</div>
                   <div className="log-detail"><strong>Technician:</strong> {log.technician_name}</div>
                   <div className="log-detail"><strong>Location:</strong> {log.location}</div>
                   <div className="log-detail"><strong>Enterprise:</strong> {log.enterprise}</div>

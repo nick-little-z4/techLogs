@@ -123,27 +123,74 @@ const SiteTotals = () => {
       alert("Please select a site to export.");
       return;
     }
-
-    const ws1 = XLSX.utils.json_to_sheet([selectedSiteData]);
-    const ws2 = XLSX.utils.json_to_sheet(siteLogs);
+  
+    // Get array of visit dates
+    const visitDates = siteLogs.map(log => new Date(log.date).toLocaleDateString());
+  
+    // Add dates_of_visits field to selected site data
+    const enrichedSiteData = {
+      ...selectedSiteData,
+      dates_of_visits: visitDates.join(', ')
+    };
+  
+    // First sheet: Site Totals
+    const ws1 = XLSX.utils.json_to_sheet([enrichedSiteData]);
+  
+    // Second sheet: Site Logs with cleaned date formatting
+    const cleanedLogs = siteLogs.map(log => ({
+      ...log,
+      date: new Date(log.date).toLocaleDateString(), // Format date only
+    }));
+  
+    const ws2 = XLSX.utils.json_to_sheet(cleanedLogs);
+  
+    // Create workbook and add sheets
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws1, "Site Totals");
     XLSX.utils.book_append_sheet(wb, ws2, "Site Logs");
-
+  
+    // Export as file
     XLSX.writeFile(wb, `${selectedSite}_totals_and_logs.xlsx`);
   };
 
-  const exportAllToExcel = () => {
+  const exportAllToExcel = async () => {
     if (totals.length === 0) {
       alert("No data to export.");
       return;
     }
-
-    const ws = XLSX.utils.json_to_sheet(totals);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "All Site Totals");
-
-    XLSX.writeFile(wb, "All_Site_Totals.xlsx");
+  
+    try {
+      const response = await fetch('https://i4xtrjux1j.execute-api.us-east-1.amazonaws.com/dev/submit-log');
+      const rawData = await response.json();
+  
+      let allLogs = [];
+  
+      if (rawData?.body) {
+        const parsedBody = typeof rawData.body === 'string'
+          ? JSON.parse(rawData.body)
+          : rawData.body;
+  
+        allLogs = parsedBody?.data || [];
+      }
+  
+      const enrichedTotals = totals.map((site) => {
+        const logsForSite = allLogs.filter(log => log.location === site.location);
+        const visitDates = logsForSite.map(log => new Date(log.date).toLocaleDateString());
+        return {
+          ...site,
+          dates_of_visits: visitDates.join(', ')
+        };
+      });
+  
+      const ws = XLSX.utils.json_to_sheet(enrichedTotals);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "All Site Totals with Dates");
+  
+      XLSX.writeFile(wb, "All_Site_Totals_With_Dates.xlsx");
+    } catch (err) {
+      console.error("Export failed:", err);
+      alert("Failed to export data.");
+    }
   };
 
   if (loading) return <div className="center">Loading...</div>;
@@ -201,7 +248,7 @@ const SiteTotals = () => {
                 {siteLogs.map((log, index) => (
                   <li key={index} className="log-entry">
                     <p><strong>Technician:</strong> {log.technician_name}</p>
-                    <p><strong>Date:</strong> {log.date}</p>
+                    <p><strong>Date:</strong> {new Date(log.date).toLocaleDateString()}</p>
                     <p><strong>Task:</strong> {log.task}</p>
                     <p><strong>Comments:</strong> {log.additional_comments}</p>
                   </li>
