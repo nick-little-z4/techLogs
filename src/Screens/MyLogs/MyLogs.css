@@ -1,6 +1,10 @@
 /* MyLogs.css */
 
-.page-wrapper {
+* {
+    box-sizing: border-box;
+  }
+  
+  .page-wrapper {
     max-width: 900px;
     margin: 40px auto;
     padding: 30px;
@@ -22,7 +26,7 @@
     text-align: center;
     font-weight: 500;
     font-size: 32px;
-    margin-top: 150px;  /* NEW: pushes it down from the title */
+    margin-top: 150px;
     margin-bottom: 25px;
     color: #f3efef;
   }
@@ -76,40 +80,7 @@
   .log-entry p strong {
     color: #111;
   }
-
-  @media (max-width: 600px) {
-    .page-wrapper {
-      margin: 20px 10px;
-      padding: 20px;
-      border-radius: 12px;
-    }
   
-    .form-title {
-      font-size: 24px;
-      margin-bottom: 15px;
-    }
-  
-    .total-count {
-      font-size: 14px;
-      text-align: center;
-      margin-top: -20px;
-    }
-  
-    .log-entry {
-      padding: 15px;
-      font-size: 14px;
-    }
-  
-    .log-entry p {
-      font-size: 14px;
-    }
-  
-    .scrollable-logs {
-      max-height: none;
-      overflow-y: visible;
-    }
-  }
-
   .log-summary {
     cursor: pointer;
     font-weight: 600;
@@ -130,7 +101,7 @@
     from { opacity: 0; transform: translateY(-5px); }
     to { opacity: 1; transform: translateY(0); }
   }
-
+  
   .pagination-controls {
     display: flex;
     justify-content: center;
@@ -151,4 +122,53 @@
   .pagination-controls button:disabled {
     background-color: #a5b4fc;
     cursor: not-allowed;
+  }
+  
+  /* Mobile Responsive Styles */
+  @media (max-width: 600px) {
+    .page-wrapper {
+      width: 100%;
+      margin: 10px;
+      padding: 16px;
+      border-radius: 12px;
+    }
+  
+    .form-title {
+      font-size: 22px;
+      margin-bottom: 15px;
+    }
+  
+    .total-count {
+      font-size: 16px;
+      margin-top: 10px;
+      margin-bottom: 20px;
+    }
+  
+    .log-entry {
+      padding: 12px;
+      font-size: 13px;
+    }
+  
+    .log-entry p {
+      font-size: 13px;
+    }
+  
+    .scrollable-logs {
+      max-height: none;
+      overflow-y: visible;
+    }
+  
+    .pagination-controls {
+      flex-direction: column;
+      gap: 8px;
+    }
+  
+    .pagination-controls span {
+      font-size: 14px;
+    }
+  
+    .pagination-controls button {
+      width: 100%;
+      max-width: 200px;
+    }
   }
