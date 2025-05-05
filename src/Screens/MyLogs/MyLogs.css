@@ -108,4 +108,25 @@
       max-height: none;
       overflow-y: visible;
     }
+
+    .log-summary {
+        cursor: pointer;
+        font-weight: 600;
+        color: #4f46e5;
+        padding-bottom: 6px;
+      }
+      
+      .log-summary:hover {
+        text-decoration: underline;
+      }
+      
+      .log-details {
+        margin-top: 10px;
+        animation: fadeIn 0.3s ease-in;
+      }
+      
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-5px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
   }
