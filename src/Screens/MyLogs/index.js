@@ -2,15 +2,32 @@ import React, { useEffect, useState } from 'react';
 import { getCurrentUser, fetchUserAttributes } from '@aws-amplify/auth';
 import './MyLogs.css';
 
+const LOGS_PER_PAGE = 5;
+
 const MyLogs = () => {
   const [logs, setLogs] = useState([]);
   const [filteredLogs, setFilteredLogs] = useState([]);
   const [currentUserName, setCurrentUserName] = useState('');
   const [error, setError] = useState(null);
   const [openIndex, setOpenIndex] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.ceil(filteredLogs.length / LOGS_PER_PAGE);
+  const startIdx = (currentPage - 1) * LOGS_PER_PAGE;
+  const currentLogs = filteredLogs.slice(startIdx, startIdx + LOGS_PER_PAGE);
 
   const toggleOpen = (index) => {
     setOpenIndex(openIndex === index ? null : index);
+  };
+
+  const goToPrev = () => {
+    setOpenIndex(null);
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+  };
+
+  const goToNext = () => {
+    setOpenIndex(null);
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   };
 
   useEffect(() => {
@@ -28,7 +45,6 @@ const MyLogs = () => {
         const parsed = typeof rawData.body === 'string' ? JSON.parse(rawData.body) : rawData.body;
 
         const allLogs = parsed.data || [];
-
         const userLogs = allLogs.filter(log =>
           log.technician_name?.toLowerCase().includes(firstNameFromEmail.toLowerCase())
         );
@@ -46,7 +62,8 @@ const MyLogs = () => {
 
   return (
     <div className="page-wrapper">
-      <h2 className="form-title">Submitted Logs</h2>
+      {/* <h2 className="form-title">Submitted Logs: <strong>{filteredLogs.length}</strong></h2> */}
+      <p className="total-count">Submitted Logs: <strong>{filteredLogs.length}</strong></p>
 
       {error && <p className="error-message">{error}</p>}
 
@@ -54,25 +71,39 @@ const MyLogs = () => {
         <p className="no-logs-message">No logs found for {currentUserName}.</p>
       ) : (
         <>
-          <p className="total-count">Logs found: <strong>{filteredLogs.length}</strong></p>
+          {/* <p className="total-count">Logs found: <strong>{filteredLogs.length}</strong></p> */}
           <div className="logs-container scrollable-logs">
-            {filteredLogs.map((log, idx) => (
-              <div className="log-entry" key={idx}>
-                <div
-                  className="log-summary"
-                  onClick={() => toggleOpen(idx)}
-                >
-                  <strong>{new Date(log.date).toLocaleDateString()}</strong> — {log.location}
-                </div>
-
-                {openIndex === idx && (
-                  <div className="log-details">
-                    <p><strong>Task:</strong> {log.task}</p>
-                    <p><strong>Comments:</strong> {log.additional_comments || 'None'}</p>
+            {currentLogs.map((log, idx) => {
+              const globalIndex = startIdx + idx;
+              return (
+                <div className="log-entry" key={globalIndex}>
+                  <div
+                    className="log-summary"
+                    onClick={() => toggleOpen(globalIndex)}
+                  >
+                    <strong>{new Date(log.date).toLocaleDateString()}</strong> — {log.location}
                   </div>
-                )}
-              </div>
-            ))}
+
+                  {openIndex === globalIndex && (
+                    <div className="log-details">
+                      <p><strong>Task:</strong> {log.task}</p>
+                      <p><strong>Comments:</strong> {log.additional_comments || 'None'}</p>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Pagination Controls */}
+          <div className="pagination-controls">
+            <button onClick={goToPrev} disabled={currentPage === 1}>
+              ⬅ Previous
+            </button>
+            <span>Page {currentPage} of {totalPages}</span>
+            <button onClick={goToNext} disabled={currentPage === totalPages}>
+              Next ➡
+            </button>
           </div>
         </>
       )}
