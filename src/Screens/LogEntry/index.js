@@ -180,7 +180,7 @@ const LogEntry = ({ userGroups }) => {
   return (
     <div className="page-wrapper">
       <div className="form-card">
-        <h2 className="form-title">Technician Log Entry</h2>
+        <h2 className="form-title_tec">Technician Log Entry</h2>
 
         <span className="user-email">
         {currentUserDisplayName

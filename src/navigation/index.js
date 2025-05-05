@@ -7,6 +7,7 @@ import TechLogs from "../Screens/TechLogs";
 import SiteTotals from "../Screens/SiteTotals";
 import EnterpriseLogs from "../Screens/EnterpriseLogs/EnterpriseLogs";
 import TaskLogs from "../Screens/TaskLogs";
+import MyLogs from "../Screens/MyLogs";
 
 const Navigation = ({ userGroups, userAttributes }) => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -23,6 +24,7 @@ const Navigation = ({ userGroups, userAttributes }) => {
         <div className="menu-toggle" onClick={toggleMenu}>☰</div>
         <div className={`navlinks ${menuOpen ? "open" : ""}`}>
           <Link className="navlink" to="/" onClick={() => setMenuOpen(false)}>Log Entry</Link>
+          <Link className="navlink" to="/MyLogs" onClick={() => setMenuOpen(false)}>My Logs</Link>
           {isManager && (
             <Link className="navlink" to="/SiteTotals" onClick={() => { setMenuOpen(false); setLogsOpen(false); }}>Site Totals</Link>
           )}
@@ -49,6 +51,7 @@ const Navigation = ({ userGroups, userAttributes }) => {
         <Route path="/TechLogs" element={isManager ? <TechLogs userAttributes={userAttributes} /> : <Navigate to="/" />} />
         <Route path="/EnterpriseLogs" element={isManager ? <EnterpriseLogs userAttributes={userAttributes} /> : <Navigate to="/" />} />
         <Route path="/TaskLogs" element={isManager ? <TaskLogs userAttributes={userAttributes} /> : <Navigate to="/" />} />
+        <Route path="/MyLogs" element={<MyLogs />} />
       </Routes>
     </Router>
   );
