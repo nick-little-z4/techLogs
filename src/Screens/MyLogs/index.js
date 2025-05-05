@@ -81,7 +81,7 @@ const MyLogs = () => {
                     className="log-summary"
                     onClick={() => toggleOpen(globalIndex)}
                   >
-                    <strong>{new Date(log.date).toLocaleDateString()}</strong> — {log.location}
+                    <strong>{new Date(log.date).toLocaleDateString('en-US', { timeZone: 'UTC' })}</strong> — {log.location}
                   </div>
 
                   {openIndex === globalIndex && (
