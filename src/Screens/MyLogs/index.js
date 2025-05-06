@@ -11,6 +11,7 @@ const MyLogs = () => {
   const [error, setError] = useState(null);
   const [openIndex, setOpenIndex] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const totalPages = Math.ceil(filteredLogs.length / LOGS_PER_PAGE);
   const startIdx = (currentPage - 1) * LOGS_PER_PAGE;
@@ -28,6 +29,20 @@ const MyLogs = () => {
   const goToNext = () => {
     setOpenIndex(null);
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  };
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    const lowerQuery = query.toLowerCase();
+
+    const filtered = logs.filter((log) =>
+      log.task?.toLowerCase().includes(lowerQuery) ||
+      log.location?.toLowerCase().includes(lowerQuery) ||
+      log.additional_comments?.toLowerCase().includes(lowerQuery)
+    );
+
+    setFilteredLogs(filtered);
+    setCurrentPage(1);
   };
 
   useEffect(() => {
@@ -62,13 +77,27 @@ const MyLogs = () => {
 
   return (
     <div className="page-wrapper">
+        
       {/* <h2 className="form-title">Submitted Logs: <strong>{filteredLogs.length}</strong></h2> */}
-      <p className="total-count">Submitted Logs: <strong>{filteredLogs.length}</strong></p>
+  {/* Header with count and search bar */}
+  <div className="logs-header">
+    <p className="total-count">
+      Submitted Logs: <strong>{filteredLogs.length}</strong>
+    </p>
 
-      {error && <p className="error-message">{error}</p>}
+    <input
+      type="text"
+      placeholder="Search Logs..."
+      value={searchQuery}
+      onChange={(e) => handleSearch(e.target.value)}
+      className="search-input"
+    />
+  </div>
+
+  {error && <p className="error-message">{error}</p>}
 
       {filteredLogs.length === 0 ? (
-        <p className="no-logs-message">No logs found for {currentUserName}.</p>
+        <p className="no-logs-message">No logs found for {currentUserName}</p>
       ) : (
         <>
           {/* <p className="total-count">Logs found: <strong>{filteredLogs.length}</strong></p> */}

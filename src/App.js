@@ -43,15 +43,33 @@ function App() {
 
   return (
     <div className="App">
-      <Authenticator>
+      <Authenticator
+      services={{
+        async validateCustomSignUp(formData) {
+          const email = formData.email || '';
+
+          // Basic email pattern
+          const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+          if (!emailPattern.test(email)) {
+            return { email: 'Please enter a valid email address.' };
+          }
+
+          if (!email.endsWith('@exactasystems.com')) {
+            return { email: 'Please enter a valid email address.' };
+          }
+
+          return {};
+        },
+      }}
+      >
         {({ signOut }) => (
           <main className="App-main">
             <header className="App-header">
-
               {userGroups !== null && (
                 <Navigation userGroups={userGroups} userAttributes={userAttributes} />
               )}
-                          <button
+              <button
                 onClick={signOut}
                 className="sign-out-button"
               >
@@ -69,4 +87,5 @@ function App() {
   );
 }
 
-export default withAuthenticator(App);
+// export default withAuthenticator(App);
+export default App;
