@@ -1,44 +1,76 @@
+/* src/assets/fonts.css */
+@font-face {
+  font-family: 'URW DIN Condensed';
+  src: url('../../../src/assets/fonts/font.css') format('woff2');
+  font-weight: bold;
+  font-style: normal;
+}
+
+/* Root Colors and Fonts */
+:root {
+  --primary: #0A0A5A;
+  --accent-pink: #FA0064;
+  --accent-orange: #FF5A1E;
+  --highlight-yellow: #FABC14;
+  --font-color: #FFFFFF;
+  --dark: #0C1428;
+  --background: #FFFFFF;
+  --text: #0C1428;
+  --font-family-main: 'URW DIN Condensed', sans-serif;
+}
+
 /* General Reset */
 body {
   margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f4f6f8;
-  color: #333;
+  font-family: var(--font-family-main);
+  background-color: var(--background);
+  color: var(--text);
 }
 
 .section-header {
   font-size: 1.1rem;
-  margin: 16px 0 0px;
+  margin: 16px 0 0;
   font-weight: 600;
-  color: #333;
+  color: var(--text);
+}
+
+.task-box {
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0;
+  background-color: var(--background);
+  border-image: linear-gradient(90deg, var(--primary), var(--accent-orange)) 1;
+  margin-bottom: 20px;
 }
 
 /* Top Bar */
-.top-bar {
+/* .top-bar {
   display: flex;
   justify-content: flex-end;
   padding: 12px 24px;
-  background-color: #ffffff;
+  background-color: var(--background);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   position: sticky;
   top: 0;
   z-index: 10;
-}
+} */
 
 .user-email {
   font-weight: 500;
-  color: #555;
+  color: var(--dark);
 }
 
 /* Form Page */
-.page-wrapper {
+.page-wrapper-entry {
   display: flex;
   justify-content: center;
-  padding: 20px;
+  padding: 10px;
+  background: linear-gradient(to right, var(--primary), var(--accent-orange));
+  color: var(--font-color);
 }
 
 .form-card {
-  background-color: #ffffff;
+  background-color: var(--background);
   border-radius: 12px;
   padding: 20px 24px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -47,10 +79,10 @@ body {
   box-sizing: border-box;
 }
 
-form-title_tec {
+.form-title_tec {
   font-size: 22px;
   margin-bottom: 14px;
-  color: #a5b1c9;
+  color: var(--primary);
 }
 
 .form-group {
@@ -61,6 +93,7 @@ form-title_tec {
   display: block;
   font-weight: 600;
   margin-bottom: -40px;
+  color: var(--text);
 }
 
 .form-input,
@@ -72,26 +105,28 @@ select {
   border-radius: 8px;
   font-size: 15px;
   outline: none;
+  background-color: var(--background);
+  color: var(--text);
   transition: border-color 0.2s ease;
+  border-image: linear-gradient(90deg, var(--primary), var(--accent-orange)) 1;
 }
 
 .form-input:focus,
 .form-textarea:focus,
 select:focus {
-  border-color: #3182ce;
+  border-color: var(--accent-pink);
 }
 
 .form-textarea {
   resize: vertical;
 }
 
-/* Buttons */
 .submit-btn {
   width: 100%;
   padding: 10px;
   margin-top: 8px;
-  background-color: #3182ce;
-  color: #fff;
+  background-color: var(--primary);
+  color: var(--font-color);
   border: none;
   border-radius: 8px;
   font-size: 15px;
@@ -101,15 +136,11 @@ select:focus {
 
 .submit-btn:hover,
 .lambda-btn:hover {
-  background-color: #2b6cb0;
+  background-color: var(--accent-orange);
 }
 
 /* Responsive Styling */
 @media screen and (max-width: 600px) {
-  .page-wrapper {
-    padding: 10px;
-  }
-
   .form-card {
     padding: 16px;
     box-shadow: none;
@@ -117,7 +148,7 @@ select:focus {
     max-width: 100%;
   }
 
-  .form-title {
+  .form-title_tec {
     font-size: 20px;
   }
 
@@ -129,4 +160,44 @@ select:focus {
     font-size: 16px;
     padding: 12px;
   }
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  justify-content: flex-end;
+}
+
+.button-group button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--font-color);
+  transition: background-color 0.3s ease, opacity 0.3s ease;
+}
+
+.button-primary {
+  background-color: var(--primary);
+}
+
+.button-primary:hover {
+  background-color: var(--accent-orange);
+}
+
+.button-secondary {
+  background-color: var(--accent-pink);
+}
+
+.button-secondary:hover {
+  background-color: var(--highlight-yellow);
+  color: var(--dark);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }

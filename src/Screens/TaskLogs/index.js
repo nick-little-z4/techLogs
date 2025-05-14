@@ -133,7 +133,7 @@ const TaskLogs = () => {
 
   return (
     <div className="container">
-      <h2 className="header">Tasks Logs</h2>
+      <h2 className="header">Task Logs</h2>
 
       <div className="controls">
         <div className="date-range-container">

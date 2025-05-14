@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { getCurrentUser, fetchUserAttributes } from '@aws-amplify/auth';
 import './LogEntry.css';
 import taskOptions from '../../data/taskOptions';
+import theme from '../../theme';
+import '../../assets/fonts/font.css'
 
 const LogEntry = ({ userGroups }) => {
   const [currentUserDisplayName, setCurrentUserDisplayName] = useState('');
@@ -178,7 +180,7 @@ const LogEntry = ({ userGroups }) => {
   };
 
   return (
-    <div className="page-wrapper">
+    <div className="page-wrapper-entry">
       <div className="form-card">
         <h2 className="form-title_tec">Technician Log Entry</h2>
 
@@ -193,7 +195,6 @@ const LogEntry = ({ userGroups }) => {
         {/* Date Section */}
         <h3 className="section-header">Date</h3>
         <div className="form-group">
-          <label className="form-label">Date</label>
           <input
             type="date"
             className="form-input"
@@ -205,7 +206,6 @@ const LogEntry = ({ userGroups }) => {
         {/* State Section */}
         <h3 className="section-header">State</h3>
         <div className="form-group">
-          <label className="form-label">State</label>
           <select
             className="form-input"
             value={selectedState}
@@ -226,7 +226,6 @@ const LogEntry = ({ userGroups }) => {
         )}
         {enterprises.length > 0 && (
           <div className="form-group">
-            <label className="form-label">Enterprise</label>
             <select
               className="form-input"
               value={selectedEnterprise}
@@ -247,7 +246,6 @@ const LogEntry = ({ userGroups }) => {
           <>
             <h3 className="section-header">Location</h3>
             <div className="form-group">
-              <label className="form-label">Location</label>
               <select
                 className="form-input"
                 value={selectedLocation}
@@ -267,34 +265,35 @@ const LogEntry = ({ userGroups }) => {
         {/* Task Section */}
         <h3 className="section-header">Task</h3>
         <div className="form-group">
-          <div className="checkbox-scroll-container">
-            {taskOptions.map((option, idx) => (
-              <div key={idx} className="checkbox-item">
-                <label>
-                  <input
-                    type="checkbox"
-                    value={option}
-                    checked={task.includes(option)}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      setTask(prev =>
-                        prev.includes(value)
-                          ? prev.filter(t => t !== value)
-                          : [...prev, value]
-                      );
-                    }}
-                  />
-                  {option}
-                </label>
-              </div>
-            ))}
+          <div className="task-box">
+            <div className="checkbox-scroll-container">
+              {taskOptions.map((option, idx) => (
+                <div key={idx} className="checkbox-item">
+                  <label>
+                    <input
+                      type="checkbox"
+                      value={option}
+                      checked={task.includes(option)}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setTask(prev =>
+                          prev.includes(value)
+                            ? prev.filter(t => t !== value)
+                            : [...prev, value]
+                        );
+                      }}
+                    />
+                    {option}
+                  </label>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
         {/* Comments Section */}
         <h3 className="section-header">Additional Comments</h3>
         <div className="form-group">
-          <label className="form-label">Additional Comments</label>
           <textarea
             className="form-textarea"
             placeholder="Add any notes or context..."
@@ -306,9 +305,12 @@ const LogEntry = ({ userGroups }) => {
 
         {/* Clear & Submit Buttons */}
         <div className="button-group">
-          <button onClick={clearForm}>Clear Form</button>
-          <button onClick={callLambda} disabled={!canSubmit}>Submit Log</button>
-        </div>
+        <button className="button-secondary" onClick={clearForm}>Clear Form</button>
+        <button className="button-primary" onClick={callLambda} disabled={!canSubmit}
+        >
+          Submit Log
+        </button>
+      </div>
 
         {/* Display Fetched Logs for Selected Location */}
         {selectedLocation && (

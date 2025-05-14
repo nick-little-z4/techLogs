@@ -10,3 +10,30 @@
     margin-bottom: 15px;
     width: 150px;
   }
+  
+  .quick-buttons button {
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, var(--primary), var(--accent-orange));
+    color: var(--font-color);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease-in-out;
+  }
+
+  /* Select with clear */
+  .select-container {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    margin: 1rem 0; /* adds space above and below */
+    padding: 0.5rem 1rem; /* increases internal space */
+    border: 2px solid;
+    border-image: linear-gradient(135deg, var(--primary), var(--accent-orange)) 1;
+    border-radius: 6px;
+    background-color: var(--background);
+    font-family: var(--font-family-main);
+    color: var(--text);
+    min-width: 500px; /* optional: ensures wider box */
+  }

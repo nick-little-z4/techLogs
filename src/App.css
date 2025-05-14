@@ -91,3 +91,79 @@ main {
     transform: rotate(360deg);
   }
 }
+
+/* App.css or index.css */
+body {
+  margin: 0;
+  font-family: 'URW DIN Condensed', sans-serif;
+  background-color: #f9f9f9;
+  color: #222;
+}
+
+.page-wrapper {
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+  max-width: 800px;
+  margin: auto;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+h2.form-title_tec {
+  font-family: 'URW DIN Condensed', sans-serif;
+  font-weight: bold;
+  color: #333;
+}
+
+.App-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* <--- This is key */
+  padding: 10px 20px;
+  background-color: #fff;
+  position: relative;
+}
+
+/* .top-bar {
+  width: 110%;
+  height: 50px;
+  background-color: white;
+  padding: 10px 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+} */
+
+.top-bar {
+  width: 110%;
+  height: 50px;
+  background: linear-gradient(
+    90deg,
+    var(--primary-color) 5%,
+    var(--accent-orange) 20%,
+    var(--accent-pink) 25%,
+    var(--background-color) 45%,
+    var(--accent-orange) 85%,
+    var(--primary-color) 95%
+  );
+  padding: 10px 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.app-logo {
+  margin: 0 auto; /* This will center it horizontally */
+  height: 40px;
+  object-fit: contain;
+  display: block; /* Make the logo a block-level element */
+  align-self: center; /* This ensures it aligns in the center vertically if inside a flex container */
+}

@@ -176,7 +176,7 @@ const TechLogs = () => {
 <div className="container">
   <h2 className="header">Tech Logs</h2>
 
-  <div className="date-range-container">
+  <div className="date-range-containers">
   <label htmlFor="startDate" className="date-label">Start Date</label>
     <div className="date-input">
       <input
@@ -236,11 +236,11 @@ const TechLogs = () => {
 
       {(startDate && endDate) || searchAgent || searchLocation ? (
         <div className="filtered-results">
-          <h2>Filtered Results</h2>
-          <p className="filtered-count">Total Filtered Logs: {flatFilteredLogs.length}</p>
+          <h2 style={{color: 'white'}}>Filtered Results</h2>
+          <p style={{color: 'white'}} className="filtered-count">Total Filtered Logs: {flatFilteredLogs.length}</p>
 
           {flatFilteredLogs.length > 0 && (
-            <button onClick={handleExportXLSX} className="export-button">
+            <button onClick={handleExportXLSX} className="export-button-tech">
               Export to Excel
             </button>
           )}
@@ -264,7 +264,7 @@ const TechLogs = () => {
         </div>
       ) : null}
 
-      <button onClick={handleClearFilters} className="clear-button">
+      <button onClick={handleClearFilters} className="clear-button-tech">
         Clear Filters
       </button>
 

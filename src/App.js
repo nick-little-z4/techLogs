@@ -9,6 +9,11 @@ import '@aws-amplify/ui-react/styles.css';
 
 import awsExports from './aws-exports';
 import Navigation from './navigation/index';
+import './assets/fonts/font.css'
+import theme from './theme';
+import { ThemeProvider } from 'styled-components';
+import GlobalStyle from './GlobalStyle';
+import exactaLogo from './assets/images/Exacta_Logo-01.png';
 
 Amplify.configure(awsExports);
 
@@ -42,48 +47,51 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      <Authenticator
-      services={{
-        async validateCustomSignUp(formData) {
-          const email = formData.email || '';
+    <ThemeProvider theme={theme}>
+      <GlobalStyle />
+      <div className="App">
+        <Authenticator
+          services={{
+            async validateCustomSignUp(formData) {
+              const email = formData.email || '';
+              const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-          // Basic email pattern
-          const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+              if (!emailPattern.test(email)) {
+                return { email: 'Please enter a valid email address.' };
+              }
 
-          if (!emailPattern.test(email)) {
-            return { email: 'Please enter a valid email address.' };
-          }
+              if (!email.endsWith('@exactasystems.com')) {
+                return { email: 'Please enter a valid email address.' };
+              }
 
-          if (!email.endsWith('@exactasystems.com')) {
-            return { email: 'Please enter a valid email address.' };
-          }
-
-          return {};
-        },
-      }}
-      >
-        {({ signOut }) => (
-          <main className="App-main">
-            <header className="App-header">
-              {userGroups !== null && (
-                <Navigation userGroups={userGroups} userAttributes={userAttributes} />
-              )}
-              <button
-                onClick={signOut}
-                className="sign-out-button"
-              >
-                Sign Out
-              </button>
-            </header>
-            <div className="App-content">
-              {/* Your expanding content like SiteTotals */}
-              {/* <SiteTotals /> */}
+              return {};
+            },
+          }}
+        >
+          {({ signOut }) => (
+            <main className="App-main">
+              <header className="App-header">
+              <div className="top-bar">
+              <img src={exactaLogo} alt="Logo" className="app-logo" />
             </div>
-          </main>
-        )}
-      </Authenticator>
-    </div>
+                {userGroups !== null && (
+                  <Navigation
+                    userGroups={userGroups}
+                    userAttributes={userAttributes}
+                  />
+                )}
+                <button onClick={signOut} className="sign-out-button">
+                  Sign Out
+                </button>
+              </header>
+              <div className="App-content">
+                {/* Add routes or content here */}
+              </div>
+            </main>
+          )}
+        </Authenticator>
+      </div>
+    </ThemeProvider>
   );
 }
 

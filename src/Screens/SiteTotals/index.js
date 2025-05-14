@@ -198,17 +198,21 @@ const SiteTotals = () => {
 
   return (
     <div className="container">
-      <h2 className="site-title">📍 Site Visit Totals</h2>
-      <p>Select a site to view more details:</p>
+    <h2 style={{ color: 'white' }}>📍 Site Visit Totals</h2>
+    <p style={{ color: 'white' }}>Select a site to view more details:</p>
 
-      <select value={selectedSite} onChange={(e) => handleSelectSite(e.target.value)}>
-        <option value="">Select a site</option>
-        {totals.map((site) => (
-          <option key={site.location} value={site.location}>
-            {site.location}
-          </option>
-        ))}
-      </select>
+    <select
+      className="select-gradient"
+      value={selectedSite}
+      onChange={(e) => handleSelectSite(e.target.value)}
+    >
+      <option value="">Select a site</option>
+      {totals.map((site) => (
+        <option key={site.location} value={site.location}>
+          {site.location}
+        </option>
+      ))}
+    </select>
 
       {selectedSite === "" ? (
         <>

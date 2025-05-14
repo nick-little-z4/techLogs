@@ -100,7 +100,6 @@ const MyLogs = () => {
         <p className="no-logs-message">No logs found for {currentUserName}</p>
       ) : (
         <>
-          {/* <p className="total-count">Logs found: <strong>{filteredLogs.length}</strong></p> */}
           <div className="logs-container scrollable-logs">
             {currentLogs.map((log, idx) => {
               const globalIndex = startIdx + idx;
