@@ -336,13 +336,13 @@ const LogEntry = ({ userGroups }) => {
                 })
                 .map((log, idx) => (
                   <li key={idx}>
-                    {new Date(log.date).toLocaleDateString()} - {
-                      log.technician_name
-                        .split('@')[0]
-                        .split('.')
-                        .map(name => name.charAt(0).toUpperCase() + name.slice(1))
-                        .join(' ')
-                    } - {log.task} - {log.additional_comments}
+                <strong>{new Date(log.date).toLocaleDateString('en-US', { timeZone: 'UTC' })}</strong> — {
+                  log.technician_name
+                    .split('@')[0]
+                    .split('.')
+                    .map(name => name.charAt(0).toUpperCase() + name.slice(1))
+                    .join(' ')
+                } — {log.task} — {log.additional_comments}
                   </li>
                 ))}
             </ul>

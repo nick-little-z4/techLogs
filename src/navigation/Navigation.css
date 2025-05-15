@@ -23,9 +23,6 @@ body {
   background-color: var(--background-color);
   color: var(--text-color);
   font-family: var(--font-family-main);
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
 }
 
 /* Navbar */
@@ -36,6 +33,7 @@ body {
   flex-direction: column;
   align-items: flex-start;
   position: relative;
+  height: 60px;
 }
 
 /* Toggle Button (Mobile) */
@@ -58,16 +56,6 @@ body {
   width: 100%;
 }
 
-.navlinks.open {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 10px 0;
-  width: 100%;
-}
-
-/* Links */
 .navlink {
   color: white;
   text-decoration: none;
@@ -79,21 +67,22 @@ body {
 .navlink:hover {
   background-color: var(--accent-pink);
   color: var(--dark-color);
-  padding: 2px 7px;
+  padding: 2px 7px; /* slightly smaller */
 }
 
 /* Dropdown */
 .dropdown {
   position: relative;
   display: inline-block;
-  width: 100%;
+  cursor: pointer;
 }
 
 .dropdown-title {
   cursor: pointer;
   padding: 10px;
   color: var(--text-color);
-  font-weight: bold;
+  /* background-color: var(--accent-orange); */
+  width: 100%;
 }
 
 .dropdown-title:hover {
@@ -103,14 +92,11 @@ body {
 
 .dropdown-content {
   display: none;
+  position: absolute;
   background-color: var(--primary-color);
+  min-width: 160px;
+  z-index: 1;
   flex-direction: column;
-  width: 100%;
-  margin-top: 4px;
-}
-
-.dropdown.open .dropdown-content {
-  display: flex;
 }
 
 .dropdown-content .navlink {
@@ -130,6 +116,10 @@ body {
   background-color: var(--accent-pink);
 }
 
+.dropdown:hover .dropdown-content {
+  display: flex;
+}
+
 /* Separator Styling */
 .navlink::after {
   content: "|";
@@ -141,38 +131,29 @@ body {
   content: "";
 }
 
+/* Don't add separator in dropdown links */
 .dropdown-content .navlink::after {
   content: "";
 }
 
-/* Responsive (Mobile) */
+/* Responsive Styles for Mobile */
 @media (max-width: 768px) {
   .menu-toggle {
     display: block;
   }
 
-  .navlinks {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-    width: 100%;
-    display: none; /* Hide by default */
-  }
-
+  .navlinks,
   .navlinks.open {
-    display: flex; /* Show when menu is open */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
   }
 
   .navlink {
     width: 100%;
     text-align: left;
-  }
-
-  .dropdown {
-    width: 100%;
-  }
-
-  .dropdown-content {
-    width: 100%;
   }
 }
