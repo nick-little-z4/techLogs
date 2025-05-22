@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import './TechLogs.css';
 import { saveAs } from 'file-saver';
-import * as XLSX from 'xlsx'; // NEW: Use XLSX instead of PapaParse
+import * as XLSX from 'xlsx';
 
 const TechLogs = () => {
   const [logs, setLogs] = useState([]);
@@ -108,21 +108,21 @@ const TechLogs = () => {
       alert("No logs to export.");
       return;
     }
-  
+
     const exportData = flatFilteredLogs.map(log => ({
       Technician: log.technician_name,
       Location: log.location,
-      Date: new Date(log.date).toLocaleDateString(), // Format date
+      Date: log.date, // Fixed: keep original string
       Task: log.task,
       Comments: log.additional_comments,
-      'Arrival Time': log.arrival_time || '',       // Optional field
-      'Departure Time': log.departure_time || '',   // Optional field
+      'Arrival Time': log.arrival_time || '',
+      'Departure Time': log.departure_time || '',
     }));
-  
+
     const worksheet = XLSX.utils.json_to_sheet(exportData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Tech Logs");
-  
+
     const xlsxBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
     const blob = new Blob([xlsxBuffer], { type: "application/octet-stream" });
     saveAs(blob, "filtered_logs.xlsx");
@@ -177,122 +177,116 @@ const TechLogs = () => {
   <h2 className="header">Tech Logs</h2>
 
   <div className="date-range-containers">
-  <label htmlFor="startDate" className="date-label">Start Date</label>
+    <label htmlFor="startDate" className="date-label">Start Date</label>
     <div className="date-input">
       <input
         type="date"
         value={startDate}
         onChange={(e) => setStartDate(e.target.value)}
         className="input"
-        placeholder="Start Date"
       />
     </div>
 
-
-    <label htmlFor="startDate" className="date-label">End Date</label>
+    <label htmlFor="endDate" className="date-label">End Date</label>
     <div className="date-input">
       <input
         type="date"
         value={endDate}
         onChange={(e) => setEndDate(e.target.value)}
         className="input"
-        placeholder="End Date"
       />
     </div>
   </div>
 
+  <div className="quick-range-buttons">
+    <button onClick={() => applyQuickRange(15)}>Last 15 Days</button>
+    <button onClick={() => applyQuickRange(30)}>Last 30 Days</button>
+    <button onClick={() => applyQuickRange(90)}>Last 90 Days</button>
+  </div>
 
-      <div className="quick-range-buttons">
-        <button onClick={() => applyQuickRange(15)}>Last 15 Days</button>
-        <button onClick={() => applyQuickRange(30)}>Last 30 Days</button>
-        <button onClick={() => applyQuickRange(90)}>Last 90 Days</button>
-      </div>
+  <div className="select-container">
+    <Select
+      options={technicianOptions}
+      onChange={setSearchAgent}
+      value={searchAgent}
+      placeholder="Select Technician"
+      className="select"
+    />
+    {searchAgent && (
+      <button className="clear-select-button" onClick={() => setSearchAgent(null)}>×</button>
+    )}
+  </div>
 
-      <div className="select-container">
-        <Select
-          options={technicianOptions}
-          onChange={setSearchAgent}
-          value={searchAgent}
-          placeholder="Select Technician"
-          className="select"
-        />
-        {searchAgent && (
-          <button className="clear-select-button" onClick={() => setSearchAgent(null)}>×</button>
-        )}
-      </div>
+  <div className="select-container">
+    <Select
+      options={locationOptions}
+      onChange={setSearchLocation}
+      value={searchLocation}
+      placeholder="Select Location"
+      className="select"
+    />
+    {searchLocation && (
+      <button className="clear-select-button" onClick={() => setSearchLocation(null)}>×</button>
+    )}
+  </div>
 
-      <div className="select-container">
-        <Select
-          options={locationOptions}
-          onChange={setSearchLocation}
-          value={searchLocation}
-          placeholder="Select Location"
-          className="select"
-        />
-        {searchLocation && (
-          <button className="clear-select-button" onClick={() => setSearchLocation(null)}>×</button>
-        )}
-      </div>
+  {(startDate && endDate) || searchAgent || searchLocation ? (
+    <div className="filtered-results">
+      <h2 style={{ color: 'white' }}>Filtered Results</h2>
+      <p style={{ color: 'white' }} className="filtered-count">Total Filtered Logs: {flatFilteredLogs.length}</p>
 
-      {(startDate && endDate) || searchAgent || searchLocation ? (
-        <div className="filtered-results">
-          <h2 style={{color: 'white'}}>Filtered Results</h2>
-          <p style={{color: 'white'}} className="filtered-count">Total Filtered Logs: {flatFilteredLogs.length}</p>
+      {flatFilteredLogs.length > 0 && (
+        <button onClick={handleExportXLSX} className="export-button-tech">
+          Export to Excel
+        </button>
+      )}
 
-          {flatFilteredLogs.length > 0 && (
-            <button onClick={handleExportXLSX} className="export-button-tech">
-              Export to Excel
-            </button>
-          )}
+      {flatFilteredLogs.length === 0 ? (
+        <p>No logs match your filter.</p>
+      ) : (
+        flatFilteredLogs.map((log, index) => (
+          <div key={index} className="filtered-log-item">
+            <h4 className="location-header">{log.location}</h4>
+            <h4 className="agent-header">{log.technician_name}</h4>
+            <div className="log-details">
+              <div className="log-detail"><strong>Date:</strong> {log.date}</div>
+              <div className="log-detail"><strong>Task:</strong> {log.task}</div>
+              <div className="log-detail"><strong>Comments:</strong> {log.additional_comments}</div>
+            </div>
+            <hr className="divider" />
+          </div>
+        ))
+      )}
+    </div>
+  ) : null}
 
-          {flatFilteredLogs.length === 0 ? (
-            <p>No logs match your filter.</p>
-          ) : (
-            flatFilteredLogs.map((log, index) => (
-              <div key={index} className="filtered-log-item">
-                <h4 className="location-header">{log.location}</h4>
-                <h4 className="agent-header">{log.technician_name}</h4>
-                <div className="log-details">
-                  <div className="log-detail"><strong>Date:</strong> {new Date(log.date).toLocaleDateString()}</div>                  
-                  <div className="log-detail"><strong>Task:</strong> {log.task}</div>
-                  <div className="log-detail"><strong>Comments:</strong> {log.additional_comments}</div>
-                </div>
-                <hr className="divider" />
-              </div>
-            ))
-          )}
-        </div>
-      ) : null}
+  <button onClick={handleClearFilters} className="clear-button-tech">
+    Clear Filters
+  </button>
 
-      <button onClick={handleClearFilters} className="clear-button-tech">
-        Clear Filters
-      </button>
-
-      {filteredLogs.map((techGroup, idx) => (
-        <div key={idx} className="tech-group">
-          {expandedTech === techGroup.technician_name && techGroup.locations.map((loc, i) => (
-            <div key={i} className="location-container">
-              <h4>{loc.location}</h4>
-              {loc.dates.map((dateGroup, j) => (
-                <div key={j} className="date-group">
-                  <strong>Date: {dateGroup.date}</strong>
-                  {dateGroup.logs.map((log, k) => (
-                    <div key={k} className="log-card">
-                      <p><strong>Technician:</strong> {log.technician_name}</p>
-                      <p><strong>Location:</strong> {log.location}</p>
-                      <p><strong>Task:</strong> {log.task}</p>
-                      <p><strong>Comments:</strong> {log.additional_comments}</p>
-                    </div>
-                  ))}
+  {filteredLogs.map((techGroup, idx) => (
+    <div key={idx} className="tech-group">
+      {expandedTech === techGroup.technician_name && techGroup.locations.map((loc, i) => (
+        <div key={i} className="location-container">
+          <h4>{loc.location}</h4>
+          {loc.dates.map((dateGroup, j) => (
+            <div key={j} className="date-group">
+              <strong>Date: {dateGroup.date}</strong>
+              {dateGroup.logs.map((log, k) => (
+                <div key={k} className="log-card">
+                  <p><strong>Technician:</strong> {log.technician_name}</p>
+                  <p><strong>Location:</strong> {log.location}</p>
+                  <p><strong>Task:</strong> {log.task}</p>
+                  <p><strong>Comments:</strong> {log.additional_comments}</p>
                 </div>
               ))}
             </div>
           ))}
         </div>
       ))}
-
-      <hr style={{ margin: '30px 0', borderColor: '#eee' }} />
     </div>
+  ))}
+</div>
   );
 };
 
