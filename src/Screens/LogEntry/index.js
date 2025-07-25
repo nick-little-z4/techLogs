@@ -305,8 +305,8 @@ const LogEntry = ({ userGroups }) => {
 
         {/* Clear & Submit Buttons */}
         <div className="button-group">
-        <button className="button-secondary" onClick={clearForm}>Clear Form</button>
-        <button className="button-primary" onClick={callLambda} disabled={!canSubmit}
+        <button className="clear-form" onClick={clearForm}>Clear Form</button>
+        <button className="submit-btn" onClick={callLambda} disabled={!canSubmit}
         >
           Submit Log
         </button>
@@ -316,7 +316,7 @@ const LogEntry = ({ userGroups }) => {
         {selectedLocation && (
         <>
           <hr />
-          <div className="logs-container scrollable-logs">
+          <div className="logs-container-entry">
           <h4>Logs for {selectedLocation}</h4>
           {locationLogs.filter(log => {
             const logDate = new Date(log.date);
@@ -334,15 +334,16 @@ const LogEntry = ({ userGroups }) => {
                   sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
                   return logDate >= sixtyDaysAgo;
                 })
+                .sort((a, b) => new Date(b.date) - new Date(a.date)) // 👈 Sort descending by date
                 .map((log, idx) => (
                   <li key={idx}>
-                <strong>{new Date(log.date).toLocaleDateString('en-US', { timeZone: 'UTC' })}</strong> — {
-                  log.technician_name
-                    .split('@')[0]
-                    .split('.')
-                    .map(name => name.charAt(0).toUpperCase() + name.slice(1))
-                    .join(' ')
-                } — {log.task} — {log.additional_comments}
+                    <strong>{new Date(log.date).toLocaleDateString('en-US', { timeZone: 'UTC' })}</strong> — {
+                      log.technician_name
+                        .split('@')[0]
+                        .split('.')
+                        .map(name => name.charAt(0).toUpperCase() + name.slice(1))
+                        .join(' ')
+                    } — {log.task} — {log.additional_comments}
                   </li>
                 ))}
             </ul>

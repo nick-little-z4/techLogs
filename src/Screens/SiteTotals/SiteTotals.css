@@ -1,48 +1,20 @@
-/* Theme Font */
-/* @font-face {
-  font-family: 'URW DIN Condensed';
-  src: url('../../../src/assets/fonts/font.css') format('woff2');
-  font-weight: bold;
-  font-style: normal;
-} */
-
-/* Root Colors and Fonts */
-:root {
-  --primary: #0A0A5A;
-  --accent-pink: #FA0064;
-  --accent-orange: #FF5A1E;
-  --highlight-yellow: #FABC14;
-  --font-color: #FFFFFF;
-  --dark: #0C1428;
-  --background: #FFFFFF;
-  --text: #0C1428;
-  --font-family-main: 'URW DIN Condensed', sans-serif;
-}
-
-/* Layout Container */
 .container {
-  min-height: 100vh;
-  background: linear-gradient(135deg, var(--primary), var(--accent-orange));
-  padding: 2rem;
+  margin-top: 45px;
+  background: #0A0A5A;
+  padding: 10px;
+  border-radius: 25px;
+  color: #0C1428;
+  font-family: 'URW DIN Condensed', sans-serif;
   box-sizing: border-box;
-  font-family: var(--font-family-main);
-  color: var(--text);
+  min-height: 100vh;
 }
 
 /* Headings */
-h2 {
-  font-size: 2rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  font-family: var(--font-family-main);
-  color: #ffffff;
-}
-
 h3 {
   font-size: 1.25rem;
   margin-top: 0;
   margin-bottom: 1rem;
-  font-family: var(--font-family-main);
+  font-family: 'URW DIN Condensed', sans-serif;
 }
 
 /* Select Dropdown */
@@ -52,10 +24,10 @@ select {
   padding: 0.6rem;
   margin-bottom: 1rem;
   font-size: 1rem;
-  font-family: var(--font-family-main);
+  font-family: 'URW DIN Condensed', sans-serif;
   border: 1px solid #ccc;
   border-radius: 8px;
-  background-color: var(--background);
+  background-color: #FFFFFF;
   color: var(--text);
 }
 
@@ -69,15 +41,14 @@ select {
 
 .card {
   flex: 1 1 calc(33.333% - 1rem);
-  background-color: var(--background);
+  background-color: #FFFFFF;
   border: 4px solid transparent;
-  border-image: linear-gradient(135deg, var(--primary), var(--accent-orange), var(--accent-pink)) 1;
   border-radius: 12px;
   padding: 1rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   cursor: pointer;
   transition: transform 0.2s ease, background-color 0.2s ease;
-  font-family: var(--font-family-main);
+  font-family: 'URW DIN Condensed', sans-serif;
 }
 
 .card:hover {
@@ -95,7 +66,7 @@ select {
 .center {
   text-align: center;
   padding: 2rem;
-  font-family: var(--font-family-main);
+  font-family: 'URW DIN Condensed', sans-serif;
 }
 
 .error {
@@ -118,14 +89,14 @@ select {
 }
 
 .modal-content {
-  background: var(--background);
+  background: #FFFFFF;
   padding: 2rem;
   max-height: 80vh;
   overflow-y: auto;
   width: 600px;
   border-radius: 12px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-  font-family: var(--font-family-main);
+  font-family: 'URW DIN Condensed', sans-serif;
 }
 
 /* Log Lists */
@@ -134,7 +105,7 @@ select {
   list-style: none;
   padding: 0;
   margin-bottom: 1.5rem;
-  font-family: var(--font-family-main);
+  font-family: 'URW DIN Condensed', sans-serif;
 }
 
 .log-list li,
@@ -161,7 +132,6 @@ select {
   border-left: 4px solid #d32f2f;
 }
 
-/* Site Details Split View */
 .site-details-container {
   display: flex;
   flex-direction: row;
@@ -171,13 +141,12 @@ select {
 
 .site-summary,
 .log-list-container {
-  background-color: var(--background);
+  background-color: #FFFFFF;
   padding: 1rem;
   border-radius: 12px;
   font-size: medium;
-  font-family: var(--font-family-main);
+  font-family: 'URW DIN Condensed', sans-serif;
   border: 4px solid;
-  border-image: linear-gradient(135deg, var(--primary), var(--accent-orange)) 1;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
@@ -190,10 +159,11 @@ select {
   max-height: 50vh;
   overflow-y: auto;
 }
+
 .export {
   margin: 1rem 0;
   padding: 0.5rem 1rem;
-  background: #008000;
+  background-color: #ADB5BD;
   color: white;
   border: none;
   border-radius: 6px;
@@ -201,8 +171,17 @@ select {
   font-size: 1rem;
 }
 
+.export:hover {
+  background-color: #059669;
+  transform: translateY(-2px);
+}
+
 .close {
-  background: linear-gradient(135deg, var(--accent-orange), var(--primary));
+  background-color: #ADB5BD;
+}
+
+.close:hover {
+  background-color: #dc1c1c;
 }
 
 /* Buttons */
@@ -211,18 +190,12 @@ button {
   margin: 0.5rem;
   font-size: 0.95rem;
   font-weight: 500;
-  color: var(--font-color);
-  background-color: var(--primary);
+  color: #FFFFFF;
   border: none;
   border-radius: px;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.2s ease;
-  font-family: var(--font-family-main);
-}
-
-button:hover {
-  background-color: var(--accent-orange);
-  transform: scale(1.05);
+  font-family: 'URW DIN Condensed', sans-serif;
 }
 
 button:disabled {
@@ -232,7 +205,6 @@ button:disabled {
 
 .select-gradient {
   border: 4px solid;
-  border-image: linear-gradient(135deg, var(--primary), var(--accent-orange)) 1;
   border-radius: 12px;
   padding: 0.6rem;
   font-size: 1rem;

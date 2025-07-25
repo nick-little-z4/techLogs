@@ -13,8 +13,8 @@
   
   .quick-buttons button {
     padding: 0.5rem 1rem;
-    background: linear-gradient(135deg, var(--primary), var(--accent-orange));
-    color: var(--font-color);
+    background: #0A0A5A;
+    color: #FFFFFF;
     border: none;
     border-radius: 6px;
     cursor: pointer;
@@ -22,18 +22,18 @@
     transition: background-color 0.2s ease-in-out;
   }
 
+  .quick-buttons button:hover {
+    background-color: #ADB5BD;
+  }
+
   /* Select with clear */
-  .select-container {
+  .select-container-task {
     position: relative;
     display: inline-flex;
     align-items: center;
-    margin: 1rem 0; /* adds space above and below */
-    padding: 0.5rem 1rem; /* increases internal space */
-    border: 2px solid;
-    border-image: linear-gradient(135deg, var(--primary), var(--accent-orange)) 1;
-    border-radius: 6px;
-    background-color: var(--background);
-    font-family: var(--font-family-main);
-    color: var(--text);
-    min-width: 500px; /* optional: ensures wider box */
+    margin: 1rem 0;
+    padding: 0.5rem 1rem;
+    font-family: 'URW DIN Condensed', sans-serif;
+    color: #FFFFFF;
+    min-width: 500px;
   }

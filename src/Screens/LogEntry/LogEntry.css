@@ -1,76 +1,52 @@
-/* src/assets/fonts.css */
-/* @font-face {
-  font-family: 'URW DIN Condensed';
-  src: url('../../../src/assets/fonts/font.css') format('woff2');
-  font-weight: bold;
-  font-style: normal;
-} */
-
-/* Root Colors and Fonts */
-:root {
-  --primary: #0A0A5A;
-  --accent-pink: #FA0064;
-  --accent-orange: #FF5A1E;
-  --highlight-yellow: #FABC14;
-  --font-color: #FFFFFF;
-  --dark: #0C1428;
-  --background: #FFFFFF;
-  --text: #0C1428;
-  --font-family-main: 'URW DIN Condensed', sans-serif;
-}
-
-/* General Reset */
-body {
-  margin: 0;
-  font-family: var(--font-family-main);
-  background-color: var(--background);
-  color: var(--text);
-}
 
 .section-header {
   font-size: 1.1rem;
   margin: 16px 0 0;
   font-weight: 600;
-  color: var(--text);
+  color: #000000;
 }
 
 .task-box {
   border: 1px solid transparent;
   border-radius: 8px;
   padding: 0;
-  background-color: var(--background);
-  border-image: linear-gradient(90deg, var(--primary), var(--accent-orange)) 1;
   margin-bottom: 20px;
+  background: #0A0A5A;
 }
 
-/* Top Bar */
-/* .top-bar {
-  display: flex;
-  justify-content: flex-end;
-  padding: 12px 24px;
-  background-color: var(--background);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-} */
-
+/*User Name*/
 .user-email {
   font-weight: 500;
-  color: var(--dark);
+  color: #0C1428;
 }
 
 /* Form Page */
 .page-wrapper-entry {
-  display: flex;
-  justify-content: center;
+  max-width: 900px;
+  margin: 40px auto;
   padding: 10px;
-  background: linear-gradient(to right, var(--primary), var(--accent-orange));
-  color: var(--font-color);
+  font-family: 'URW DIN Condensed', sans-serif;
+  background: #0A0A5A;
+  border-radius: 25px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Font for log container*/
+.logs-container-entry {
+  display: flex;
+  flex-direction: column;
+  max-height: 500px;
+  overflow-y: auto;
+  max-height: none;
+  overflow-y: visible;
+  border: 1px solid #0A0A5A;
+  border-radius: 4px;
+  color: #0A0A5A;
+  font-size: medium;
 }
 
 .form-card {
-  background-color: var(--background);
+  background-color: #FFFFFF;
   border-radius: 12px;
   padding: 20px 24px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -82,7 +58,7 @@ body {
 .form-title_tec {
   font-size: 22px;
   margin-bottom: 14px;
-  color: var(--primary);
+  color: #0A0A5A;
 }
 
 .form-group {
@@ -93,7 +69,7 @@ body {
   display: block;
   font-weight: 600;
   margin-bottom: -40px;
-  color: var(--text);
+  color: #0C1428;
 }
 
 .form-input,
@@ -101,42 +77,24 @@ body {
 select {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid #0A0A5A;
   border-radius: 8px;
   font-size: 15px;
   outline: none;
-  background-color: var(--background);
-  color: var(--text);
+  background-color: #FFFFFF;
+
+  color: #0C1428;
   transition: border-color 0.2s ease;
-  border-image: linear-gradient(90deg, var(--primary), var(--accent-orange)) 1;
 }
 
 .form-input:focus,
 .form-textarea:focus,
 select:focus {
-  border-color: var(--accent-pink);
+  border-color: #0A0A5A;
 }
 
 .form-textarea {
   resize: vertical;
-}
-
-.submit-btn {
-  width: 100%;
-  padding: 10px;
-  margin-top: 8px;
-  background-color: var(--primary);
-  color: var(--font-color);
-  border: none;
-  border-radius: 8px;
-  font-size: 15px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.submit-btn:hover,
-.lambda-btn:hover {
-  background-color: var(--accent-orange);
 }
 
 /* Responsive Styling */
@@ -155,18 +113,6 @@ select:focus {
   .form-label {
     margin-bottom: 4px;
   }
-
-  .submit-btn {
-    font-size: 16px;
-    padding: 12px;
-  }
-}
-
-.button-group {
-  display: flex;
-  gap: 10px;
-  margin-top: 20px;
-  justify-content: flex-end;
 }
 
 .button-group button {
@@ -176,25 +122,12 @@ select:focus {
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
-  color: var(--font-color);
+  color: #FFFFFF;
   transition: background-color 0.3s ease, opacity 0.3s ease;
 }
 
-.button-primary {
-  background-color: var(--primary);
-}
-
-.button-primary:hover {
-  background-color: var(--accent-orange);
-}
-
-.button-secondary {
-  background-color: var(--accent-pink);
-}
-
-.button-secondary:hover {
-  background-color: var(--highlight-yellow);
-  color: var(--dark);
+.clear-form {
+  background-color: #ADB5BD;
 }
 
 button:disabled {

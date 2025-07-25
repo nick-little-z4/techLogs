@@ -164,18 +164,44 @@ const TaskLogs = () => {
           <button onClick={() => setLastNDays(90)} className="quick-button">Past 90 Days</button>
         </div>
 
-        <div className="select-container">
+        <div className="select-container-task">
           <Select
             options={taskOptions}
             onChange={setSearchTask}
             value={searchTask}
             placeholder="Select Task"
             className="select"
+            styles={{
+              control: (base) => ({
+                ...base,
+                backgroundColor: '#0A0A5A',
+                color: '#FFFFFF',
+                borderColor: '#FFFFFF',
+              }),
+              singleValue: (base) => ({
+                ...base,
+                color: '#FFFFFF',
+              }),
+              placeholder: (base) => ({
+                ...base,
+                color: '#FFFFFF',
+              }),
+              input: (base) => ({
+                ...base,
+                color: '#FFFFFF',
+              }),
+              menu: (base) => ({
+                ...base,
+                backgroundColor: '#0A0A5A',
+              }),
+              option: (base, state) => ({
+                ...base,
+                backgroundColor: state.isFocused ? '#1F1F6B' : '#0A0A5A',
+                color: '#FFFFFF',
+              }),
+            }}
           />
-          {searchTask && (
-            <button className="clear-select-button" onClick={() => setSearchTask(null)}>×</button>
-          )}
-        </div>
+      </div>
 
         {(startDate || endDate || searchTask) && (
           <button onClick={handleClearFilters} className="clear-button">

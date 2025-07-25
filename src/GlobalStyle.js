@@ -9,20 +9,20 @@ const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
     padding: 0;
-    font-family: ${({ theme }) => theme?.font?.family || 'sans-serif'};
-    background-color: ${({ theme }) => theme?.colors?.background || '#fff'};
-    color: ${({ theme }) => theme?.colors?.text || '#000'};
+    font-family: 'URW DIN Condensed';
   }
 
 .App-header {
-  background-color: ${({ theme }) => theme.colors.primary};  // still dark blue
-  border-bottom: 4px solid ${({ theme }) => theme.colors.accentOrange};  // ← orange accent line
-  padding: 20px;
-  color: white;
+  background-color: #FFFFFF;
+/*  border-top: 4px solid #FF5A1E;
+  border-right: 4px solid #FF5A1E;
+  border-left: 4px solid #FF5A1E;
+  border-bottom: 4px solid #FF5A1E; */
+  padding: 35px;
 }
 
 .sign-out-button {
-   background-color: ${({ theme }) => theme.colors.accentOrange}; // ← this uses your orange
+  background-color: #0A0A5A;
   color: white;
   border: none;
   padding: 10px 15px;
@@ -30,10 +30,6 @@ const GlobalStyle = createGlobalStyle`
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.accentOrange}; // ← this uses your orange
-  }
 }
 `;
 

@@ -208,17 +208,43 @@ const EnterpriseLogs = () => {
     <button onClick={() => setPastDays(90)} className="quick-button">Past 90 Days</button>
   </div>
 
-  <div className="select-container">
+  <div className="select-container-enterprise">
     <Select
       options={enterpriseOptions}
       onChange={setSearchEnterprise}
       value={searchEnterprise}
       placeholder="Select Enterprise"
       className="select"
+      styles={{
+        control: (base) => ({
+          ...base,
+          backgroundColor: '#0A0A5A',
+          color: '#FFFFFF',
+          borderColor: '#FFFFFF',
+        }),
+        singleValue: (base) => ({
+          ...base,
+          color: '#FFFFFF',
+        }),
+        placeholder: (base) => ({
+          ...base,
+          color: '#FFFFFF',
+        }),
+        input: (base) => ({
+          ...base,
+          color: '#FFFFFF',
+        }),
+        menu: (base) => ({
+          ...base,
+          backgroundColor: '#0A0A5A',
+        }),
+        option: (base, state) => ({
+          ...base,
+          backgroundColor: state.isFocused ? '#1F1F6B' : '#0A0A5A',
+          color: '#FFFFFF',
+        }),
+      }}
     />
-    {searchEnterprise && (
-      <button className="clear-select-button" onClick={() => setSearchEnterprise(null)}>×</button>
-    )}
   </div>
 
   {(startDate || endDate || searchEnterprise) && (

@@ -1,5 +1,3 @@
-/* EnterpriseLogs.css (Updated) */
-
 .enterprise-logs-container {
     max-width: 1000px;
     margin: 40px auto;
@@ -28,11 +26,23 @@
   }
   
   .date-range-container,
-  .select-container {
+  .select-container-enterprise {
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
     margin-bottom: 16px;
+  }
+
+  .select-container-enterprise {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    margin: 0.5rem 0;
+    background-color: #0A0A5A;
+    border-radius: 6px;
+    font-family: 'URW DIN Condensed', sans-serif;
+    color: #FFFFFF;
+    min-width: 500px;
   }
   
   .input {
@@ -83,9 +93,10 @@
   }
   
   .export-button {
-    background-color: #10b981;
+    background-color: #ADB5BD;
     color: white;
   }
+
   .export-button:hover {
     background-color: #059669;
     transform: translateY(-2px);

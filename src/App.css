@@ -1,17 +1,9 @@
-
-/* App.css */
+/*Aligns font */
 .App {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Ensures the app takes up at least the full screen height */
-  background-color: #f5f5f5; /* Or any background color you prefer */
+  background-color: #f5f5f5;
   text-align: center;
-}
-
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -20,52 +12,20 @@
   }
 }
 
+/*Confies body of app centered onto screen.*/
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: 20px;
   color: white;
 }
 
-.logs-container {
-  background-color: #f8f9fa; /* light background */
-  padding: 1rem;
-  border-radius: 8px;
-  color: #212529; /* dark font */
-  font-size: medium;
-}
-
-.log-entry {
-  background-color: white;
-  padding: 1rem;
-  margin-bottom: 0.75rem;
-  border-radius: 6px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-  color: #212529; /* ensure text is visible */
-}
-
-.logs-container h4 {
-  margin-bottom: 0.1rem; /* adjust as needed */
-}
-
-.scrollable-logs {
-  max-height: 150px; /* or any height you want */
-  overflow-y: auto;
-  padding-right: 10px; /* optional, for scrollbar space */
-  border: 10px solid #3182ceb7; /* optional, for visual boundary */
-}
-
+/*Controls the main body.*/
 main {
-  flex: 1; /* This will make sure the main content stretches to fill remaining space */
+  flex: 1; 
   padding: 0px;
-}
-
-.App-link {
-  color: #61dafb;
 }
 
 .checkbox-scroll-container {
@@ -115,30 +75,7 @@ h2.form-title_tec {
   color: #333;
 }
 
-.App-header {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start; /* <--- This is key */
-  padding: 10px 20px;
-  background-color: #fff;
-  position: relative;
-}
-
 /* .top-bar {
-  width: 110%;
-  height: 50px;
-  background-color: white;
-  padding: 10px 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-} */
-
-.top-bar {
   width: 110%;
   height: 50px;
   background: linear-gradient(
@@ -158,12 +95,26 @@ h2.form-title_tec {
   position: sticky;
   top: 0;
   z-index: 1000;
+} */
+
+.top-bar {
+  width: 110%;
+  height: 20px;
+  padding: 10px 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
+
  
 .app-logo {
-  margin: 0 auto; /* This will center it horizontally */
   height: 40px;
-  object-fit: contain;
-  display: block; /* Make the logo a block-level element */
-  align-self: center; /* This ensures it aligns in the center vertically if inside a flex container */
+  width: auto;
+  margin: 0 auto;
+  transform: translate(-0%, -75%);
+  pointer-events: none;
 }

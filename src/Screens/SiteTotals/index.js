@@ -198,7 +198,7 @@ const SiteTotals = () => {
 
   return (
     <div className="container">
-    <h2 style={{ color: 'white' }}>📍 Site Visit Totals</h2>
+    <h2 style={{ color: 'white' }}>Site Visit Totals</h2>
     <p style={{ color: 'white' }}>Select a site to view more details:</p>
 
     <select
@@ -236,7 +236,7 @@ const SiteTotals = () => {
           <div className="site-details-container">
             <div className="site-summary">
               <button className="export" onClick={exportToExcel}>Export This Site</button>
-              <button className="close" onClick={() => setSelectedSite("")}>❌ Close</button>
+              <button className="close" onClick={() => setSelectedSite("")}>Close</button>
 
               <h3>{selectedSite} Totals</h3>
               <p>🕒 Last 3 Months: <strong>{selectedSiteData.three_month_visits}</strong></p>

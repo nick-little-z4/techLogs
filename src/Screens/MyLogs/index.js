@@ -77,11 +77,10 @@ const MyLogs = () => {
 
   return (
     <div className="page-wrapper">
-        
-      {/* <h2 className="form-title">Submitted Logs: <strong>{filteredLogs.length}</strong></h2> */}
+      <div className="my-logs-bg">
   {/* Header with count and search bar */}
   <div className="logs-header">
-    <p className="total-count">
+    <p className="submitted-logs-count">
       Submitted Logs: <strong>{filteredLogs.length}</strong>
     </p>
 
@@ -100,7 +99,7 @@ const MyLogs = () => {
         <p className="no-logs-message">No logs found for {currentUserName}</p>
       ) : (
         <>
-          <div className="logs-container scrollable-logs">
+          <div className="logs-container">
             {currentLogs.map((log, idx) => {
               const globalIndex = startIdx + idx;
               return (
@@ -135,6 +134,7 @@ const MyLogs = () => {
           </div>
         </>
       )}
+      </div>
     </div>
   );
 };

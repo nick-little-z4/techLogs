@@ -19,15 +19,8 @@ const Navigation = ({ userGroups, userAttributes }) => {
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const toggleLogs = () => setLogsOpen(!logsOpen);
 
-  const navStyle = {
-    backgroundColor: theme.colors.primary,
-    color: theme.colors.background,
-    padding: theme.spacing?.medium || "16px",
-    fontFamily: theme.fonts.main,
-  };
-
   const linkStyle = {
-    color: theme.colors.fontColor,
+    color: 'white',
     textDecoration: "none",
     padding: "0px 0px",
     display: "block",
@@ -53,8 +46,8 @@ const Navigation = ({ userGroups, userAttributes }) => {
 
   return (
     <Router>
-      <nav className="navbar" style={navStyle}>
-        <div className="menu-toggle" onClick={toggleMenu} style={{ color: theme.colors.accentPink }}>☰</div>
+      <nav className="navbar">
+        <div className="menu-toggle" onClick={toggleMenu} style={{ color: "#FFFFFF" }}>☰</div>
         <div className={`navlinks ${menuOpen ? "open" : ""}`}>
           <Link className="navlink" to="/" onClick={() => setMenuOpen(false)} style={linkStyle}>Log Entry</Link>
           <Link className="navlink" to="/MyLogs" onClick={() => setMenuOpen(false)} style={linkStyle}>My Logs</Link>
@@ -64,7 +57,7 @@ const Navigation = ({ userGroups, userAttributes }) => {
           {isManager && (
             <div className="dropdown">
               <div className="dropdown-title" onClick={toggleLogs} style={dropdownTitleStyle}>
-                Logs {logsOpen ? "▲" : "▼"}
+              Logs <span style={{ fontSize: '0.7em' }}>{logsOpen ? "▲" : "▼"}</span>
               </div>
               <div className="dropdown-content" style={dropdownContentStyle}>
                 <Link className="navlink" to="/TechLogs" onClick={() => { setMenuOpen(false); setLogsOpen(false); }} style={linkStyle}>Tech Logs</Link>

@@ -204,26 +204,85 @@ const TechLogs = () => {
     <button onClick={() => applyQuickRange(90)}>Last 90 Days</button>
   </div>
 
-  <div className="select-container">
+  <div className="select-container-techs">
     <Select
       options={technicianOptions}
       onChange={setSearchAgent}
       value={searchAgent}
       placeholder="Select Technician"
       className="select"
+      styles={{
+        control: (base) => ({
+          ...base,
+          backgroundColor: '#0A0A5A',
+          color: '#FFFFFF',
+          borderColor: '#FFFFFF',
+        }),
+        singleValue: (base) => ({
+          ...base,
+          color: '#FFFFFF',
+        }),
+        placeholder: (base) => ({
+          ...base,
+          color: '#FFFFFF',
+        }),
+        input: (base) => ({
+          ...base,
+          color: '#FFFFFF',
+        }),
+        menu: (base) => ({
+          ...base,
+          backgroundColor: '#0A0A5A',
+        }),
+        option: (base, state) => ({
+          ...base,
+          backgroundColor: state.isFocused ? '#1F1F6B' : '#0A0A5A',
+          color: '#FFFFFF',
+        }),
+      }}
     />
     {searchAgent && (
       <button className="clear-select-button" onClick={() => setSearchAgent(null)}>×</button>
     )}
   </div>
 
-  <div className="select-container">
+
+  <div className="select-container-techs">
     <Select
       options={locationOptions}
       onChange={setSearchLocation}
       value={searchLocation}
       placeholder="Select Location"
       className="select"
+      styles={{
+        control: (base) => ({
+          ...base,
+          backgroundColor: '#0A0A5A',
+          color: '#FFFFFF',
+          borderColor: '#FFFFFF',
+        }),
+        singleValue: (base) => ({
+          ...base,
+          color: '#FFFFFF',
+        }),
+        placeholder: (base) => ({
+          ...base,
+          color: '#FFFFFF',
+        }),
+        input: (base) => ({
+          ...base,
+          color: '#FFFFFF',
+        }),
+        menu: (base) => ({
+          ...base,
+          backgroundColor: '#0A0A5A',
+        }),
+        option: (base, state) => ({
+          ...base,
+          backgroundColor: state.isFocused ? '#1F1F6B' : '#0A0A5A',
+          color: '#FFFFFF',
+        }),
+      }}
     />
     {searchLocation && (
       <button className="clear-select-button" onClick={() => setSearchLocation(null)}>×</button>
@@ -232,8 +291,8 @@ const TechLogs = () => {
 
   {(startDate && endDate) || searchAgent || searchLocation ? (
     <div className="filtered-results">
-      <h2 style={{ color: 'white' }}>Filtered Results</h2>
-      <p style={{ color: 'white' }} className="filtered-count">Total Filtered Logs: {flatFilteredLogs.length}</p>
+      <h2>Filtered Results</h2>
+      <p className="filtered-count">Total Filtered Logs: {flatFilteredLogs.length}</p>
 
       {flatFilteredLogs.length > 0 && (
         <button onClick={handleExportXLSX} className="export-button-tech">

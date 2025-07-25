@@ -7,7 +7,7 @@ const theme = {
       highlightYellow: '#FABC14',
       fontColor: '#FFFFFF',
       dark: '#0C1428',
-      background: '#FFFFFF',
+      background: '#FA0064',
       text: '#0C1428',
     },
     fonts: {
