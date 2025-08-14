@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+// MaintenanceSites.js
+import React, { useEffect, useState } from 'react';
 import * as XLSX from "xlsx";
-import './SiteTotals.css';
 
-const SiteTotals = () => {
+const MaintenanceSites = () => {
   const [totals, setTotals] = useState([]);
   const [selectedSite, setSelectedSite] = useState("");
   const [siteLogs, setSiteLogs] = useState([]);
@@ -43,11 +43,7 @@ const SiteTotals = () => {
         if (!totalsByLocation[location]) {
           totalsByLocation[location] = {
             location,
-            three_month_visits: 0,
-            six_month_visits: 0,
-            weekly_visits: 0,
-            monthly_visits: 0,
-            yearly_visits: 0,
+            upcoming_maintenances: 0,
           };
         }
 
@@ -60,14 +56,8 @@ const SiteTotals = () => {
           return d1.getFullYear() === d2.getFullYear() && week1 === week2;
         };
 
-        if (logDate >= threeMonthsAgo) totalsByLocation[location].three_month_visits++;
-        if (logDate >= sixMonthsAgo) totalsByLocation[location].six_month_visits++;
-        if (isSameWeek(logDate, now)) totalsByLocation[location].weekly_visits++;
-        if (logDate.getMonth() === now.getMonth() && logDate.getFullYear() === now.getFullYear()) {
-          totalsByLocation[location].monthly_visits++;
-        }
-        if (logDate.getFullYear() === now.getFullYear()) {
-          totalsByLocation[location].yearly_visits++;
+        if (logDate > now) {
+          totalsByLocation[location].upcoming_maintenances++;
         }
       });
 
@@ -105,8 +95,10 @@ const SiteTotals = () => {
 
       const filteredLogs = data.filter((log) => {
         const logDate = new Date(log.date);
-        return log.location === site && logDate >= sixMonthsAgo;
+        return log.location === site && logDate > now;
       });
+
+      filteredLogs.sort((a, b) => new Date(a.date) - new Date(b.date));
 
       setSiteLogs(filteredLogs);
 
@@ -198,7 +190,7 @@ const SiteTotals = () => {
 
   return (
     <div className="container">
-    <h2 style={{ color: 'white' }}>Site Visit Totals</h2>
+    <h2 style={{ color: 'white' }}>Maintenance</h2>
     <p style={{ color: 'white' }}>Select a site to view more details:</p>
 
     <select
@@ -239,11 +231,7 @@ const SiteTotals = () => {
               <button className="close" onClick={() => setSelectedSite("")}>Close</button>
 
               <h3>{selectedSite} Totals</h3>
-              <p>🕒 Last 3 Months: <strong>{selectedSiteData.three_month_visits}</strong></p>
-              <p>🕒 Last 6 Months: <strong>{selectedSiteData.six_month_visits}</strong></p>
-              <p>📅 Weekly: <strong>{selectedSiteData.weekly_visits}</strong></p>
-              <p>📆 Monthly: <strong>{selectedSiteData.monthly_visits}</strong></p>
-              <p>📊 Yearly: <strong>{selectedSiteData.yearly_visits}</strong></p>
+              <p>🛠️ Upcoming Maintenances: <strong>{selectedSiteData.upcoming_maintenances}</strong></p>
             </div>
 
             <div className="log-list-container">
@@ -268,4 +256,4 @@ const SiteTotals = () => {
   );
 };
 
-export default SiteTotals;
+export default MaintenanceSites;

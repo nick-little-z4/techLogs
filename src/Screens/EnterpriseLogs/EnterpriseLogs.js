@@ -14,7 +14,7 @@ const EnterpriseLogs = () => {
   useEffect(() => {
     const fetchLogs = async () => {
       try {
-        const response = await fetch('https://i4xtrjux1j.execute-api.us-east-1.amazonaws.com/dev/submit-log');
+        const response = await fetch('https://z2h4sw2lg0.execute-api.us-east-1.amazonaws.com/prod/getTechDataLogs');
         const rawData = await response.json();
 
         let data = [];

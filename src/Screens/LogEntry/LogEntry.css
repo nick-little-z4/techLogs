@@ -130,7 +130,11 @@ select:focus {
   background-color: #ADB5BD;
 }
 
-button:disabled {
+.submit-button {
+  background-color: #4986c4;
+}
+
+/* button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
-}
+} */

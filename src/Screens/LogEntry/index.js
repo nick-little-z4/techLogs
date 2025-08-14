@@ -15,13 +15,12 @@ const LogEntry = ({ userGroups }) => {
   const [selectedEnterprise, setSelectedEnterprise] = useState('');
   const [filteredLocations, setFilteredLocations] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState('');
-  const [task, setTask] = useState('');
+  const [task, setTask] = useState([]);
   const [comments, setComments] = useState('');
   const [allLogs, setAllLogs] = useState([]);
   const [locationLogs, setLocationLogs] = useState([]);
   
-
-  const canSubmit = selectedLocation !== '' && task !== '';
+ const canSubmit = selectedLocation !== '' && task.length > 0;
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -31,15 +30,18 @@ const LogEntry = ({ userGroups }) => {
         const displayName = userAttributes.displayName || userAttributes.email;
         setCurrentUserDisplayName(displayName);
       } catch (err) {
-        console.error('Failed to fetch user:', err);
+        console.error('User not authenticated:', err);
       }
     };
 
     const fetchLocations = async () => {
       try {
-        const response = await fetch('https://i4xtrjux1j.execute-api.us-east-1.amazonaws.com/dev/getLocations');
+        const response = await fetch('https://z2h4sw2lg0.execute-api.us-east-1.amazonaws.com/prod/getLocations');
         const rawData = await response.json();
+        console.log("📥 Raw API Response:", rawData);
+
         const parsedBody = typeof rawData.body === 'string' ? JSON.parse(rawData.body) : rawData.body;
+        console.log("📦 Parsed Body:", parsedBody);
 
         if (!Array.isArray(parsedBody.data)) {
           console.error('❌ Unexpected response format:', parsedBody);
@@ -47,9 +49,13 @@ const LogEntry = ({ userGroups }) => {
         }
 
         let allLocations = parsedBody.data;
+        console.log("✅ Locations Array:", allLocations);
+
         setLocations(allLocations);
 
         const uniqueStates = [...new Set(allLocations.map(loc => loc.state).filter(Boolean))];
+        console.log("📍 Unique States Extracted:", uniqueStates);
+
         setStates(uniqueStates.sort());
 
       } catch (error) {
@@ -97,37 +103,43 @@ const LogEntry = ({ userGroups }) => {
     }
   }, [selectedEnterprise, selectedState, locations]);
 
-  // Fetch logs for the selected location
   useEffect(() => {
     const fetchLogsForLocation = async () => {
       if (!selectedLocation) {
         setLocationLogs([]);
         return;
       }
-  
+
       try {
-        const response = await fetch('https://i4xtrjux1j.execute-api.us-east-1.amazonaws.com/dev/submit-log');
+        const response = await fetch('https://z2h4sw2lg0.execute-api.us-east-1.amazonaws.com/prod/getTechDataLogs', {
+          method: 'GET',
+        });
+
         const rawData = await response.json();
-  
+        console.log("📥 Logs API Response:", rawData);
+
         const parsedBody = typeof rawData.body === 'string'
           ? JSON.parse(rawData.body)
           : rawData.body;
-  
+        console.log("📦 Parsed Logs Body:", parsedBody);
+
         const allLogs = parsedBody.data || [];
-  
-        // Filter logs by selectedLocation
+
         const logsForLocation = allLogs.filter(log => log.location === selectedLocation);
+        console.log(`📍 Logs for Selected Location (${selectedLocation}):`, logsForLocation);
+
         setLocationLogs(logsForLocation);
       } catch (error) {
         console.error('Error fetching logs for location:', error);
       }
     };
-  
+
     fetchLogsForLocation();
   }, [selectedLocation]);
+
   const callLambda = async () => {
-    if (!selectedLocation || !task) {
-      alert('🚫 Please select a Location and a Task before submitting.');
+    if (!selectedLocation || task.length === 0) {
+      alert('🚫 Please select a Location and at least one Task before submitting.');
       return;
     }
 
@@ -136,33 +148,38 @@ const LogEntry = ({ userGroups }) => {
       const userAttributes = await fetchUserAttributes(user);
       const displayName = userAttributes.displayName || userAttributes.email;
 
-      const logData = {
-        technician_name: displayName,
-        date,
-        location: selectedLocation,
-        task: Array.isArray(task) ? task.join(', ') : task,
-        additional_comments: comments,
-        enterprise: selectedEnterprise,
-        state: selectedState,
-      };
+      // Loop over each selected task and submit separately
+      for (const singleTask of task) {
+        const logData = {
+          technician_name: displayName,
+          date,
+          location: selectedLocation,
+          task: singleTask, // only one task here
+          additional_comments: comments,
+          enterprise: selectedEnterprise,
+          state: selectedState,
+        };
 
-      const response = await fetch('https://i4xtrjux1j.execute-api.us-east-1.amazonaws.com/dev/submit-log', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(logData),
-      });
+        const response = await fetch(
+          'https://z2h4sw2lg0.execute-api.us-east-1.amazonaws.com/prod/submit-log',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(logData),
+          }
+        );
 
-      const data = await response.json();
+        if (!response.ok) {
+          alert(`❌ Failed to submit log for task "${singleTask}". Status: ${response.status}`);
+          return;
+        }
 
-      if (!response.ok) {
-        alert(`❌ Failed to submit log. Status: ${response.status}`);
-        return;
+        const data = await response.json();
+        const parsedBody = JSON.parse(data.body);
+        console.log(`✅ Submitted log for "${singleTask}": ${parsedBody.message}`);
       }
 
-      const parsedBody = JSON.parse(data.body);
-      alert(`✅ ${parsedBody.message}`);
+      alert(`✅ Successfully submitted ${task.length} log entries.`);
       clearForm();
 
     } catch (error) {
@@ -179,18 +196,23 @@ const LogEntry = ({ userGroups }) => {
     setComments('');
   };
 
+  // Log whenever selectedState changes
+  useEffect(() => {
+    console.log("selectedState updated:", selectedState);
+  }, [selectedState]);
+
   return (
     <div className="page-wrapper-entry">
       <div className="form-card">
         <h2 className="form-title_tec">Technician Log Entry</h2>
 
         <span className="user-email">
-        {currentUserDisplayName
-          .split('@')[0]
-          .split('.')
-          .map(name => name.charAt(0).toUpperCase() + name.slice(1))
-          .join(' ')}
-      </span>
+          {currentUserDisplayName
+            .split('@')[0]
+            .split('.')
+            .map(name => name.charAt(0).toUpperCase() + name.slice(1))
+            .join(' ')}
+        </span>
 
         {/* Date Section */}
         <h3 className="section-header">Date</h3>
@@ -209,7 +231,11 @@ const LogEntry = ({ userGroups }) => {
           <select
             className="form-input"
             value={selectedState}
-            onChange={(e) => setSelectedState(e.target.value)}
+            onChange={(e) => {
+              console.log('State Selected:', e.target.value);
+              setSelectedState(e.target.value);
+            }}
+            onClick={() => console.log('State select clicked')}
           >
             <option value="">Select State</option>
             {states.map((state, idx) => (
@@ -222,23 +248,23 @@ const LogEntry = ({ userGroups }) => {
 
         {/* Enterprise Section */}
         {enterprises.length > 0 && (
-          <h3 className="section-header">Enterprise</h3>
-        )}
-        {enterprises.length > 0 && (
-          <div className="form-group">
-            <select
-              className="form-input"
-              value={selectedEnterprise}
-              onChange={(e) => setSelectedEnterprise(e.target.value)}
-            >
-              <option value="">Select Enterprise</option>
-              {enterprises.map((ent, idx) => (
-                <option key={idx} value={ent}>
-                  {ent}
-                </option>
-              ))}
-            </select>
-          </div>
+          <>
+            <h3 className="section-header">Enterprise</h3>
+            <div className="form-group">
+              <select
+                className="form-input"
+                value={selectedEnterprise}
+                onChange={(e) => setSelectedEnterprise(e.target.value)}
+              >
+                <option value="">Select Enterprise</option>
+                {enterprises.map((ent, idx) => (
+                  <option key={idx} value={ent}>
+                    {ent}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </>
         )}
 
         {/* Location Section */}
@@ -305,52 +331,49 @@ const LogEntry = ({ userGroups }) => {
 
         {/* Clear & Submit Buttons */}
         <div className="button-group">
-        <button className="clear-form" onClick={clearForm}>Clear Form</button>
-        <button className="submit-btn" onClick={callLambda} disabled={!canSubmit}
-        >
-          Submit Log
-        </button>
-      </div>
+          <button className="clear-form" onClick={clearForm}>Clear Form</button>
+          <button className="submit-button" onClick={callLambda} disabled={!canSubmit}> Submit Log </button>
+        </div>
 
         {/* Display Fetched Logs for Selected Location */}
         {selectedLocation && (
-        <>
-          <hr />
-          <div className="logs-container-entry">
-          <h4>Logs for {selectedLocation}</h4>
-          {locationLogs.filter(log => {
-            const logDate = new Date(log.date);
-            const sixtyDaysAgo = new Date();
-            sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
-            return logDate >= sixtyDaysAgo;
-          }).length === 0 ? (
-            <p>No logs recorded</p>
-          ) : (
-            <ul>
-              {locationLogs
-                .filter(log => {
-                  const logDate = new Date(log.date);
-                  const sixtyDaysAgo = new Date();
-                  sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
-                  return logDate >= sixtyDaysAgo;
-                })
-                .sort((a, b) => new Date(b.date) - new Date(a.date)) // 👈 Sort descending by date
-                .map((log, idx) => (
-                  <li key={idx}>
-                    <strong>{new Date(log.date).toLocaleDateString('en-US', { timeZone: 'UTC' })}</strong> — {
-                      log.technician_name
-                        .split('@')[0]
-                        .split('.')
-                        .map(name => name.charAt(0).toUpperCase() + name.slice(1))
-                        .join(' ')
-                    } — {log.task} — {log.additional_comments}
-                  </li>
-                ))}
-            </ul>
-          )}
-        </div>
-        </>
-      )}
+          <>
+            <hr />
+            <div className="logs-container-entry">
+              <h4>Logs for {selectedLocation}</h4>
+              {locationLogs.filter(log => {
+                const logDate = new Date(log.date);
+                const sixtyDaysAgo = new Date();
+                sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
+                return logDate >= sixtyDaysAgo;
+              }).length === 0 ? (
+                <p>No logs recorded</p>
+              ) : (
+                <ul>
+                  {locationLogs
+                    .filter(log => {
+                      const logDate = new Date(log.date);
+                      const sixtyDaysAgo = new Date();
+                      sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
+                      return logDate >= sixtyDaysAgo;
+                    })
+                    .sort((a, b) => new Date(b.date) - new Date(a.date))
+                    .map((log, idx) => (
+                      <li key={idx}>
+                        <strong>{new Date(log.date).toLocaleDateString('en-US', { timeZone: 'UTC' })}</strong> — {
+                          log.technician_name
+                            .split('@')[0]
+                            .split('.')
+                            .map(name => name.charAt(0).toUpperCase() + name.slice(1))
+                            .join(' ')
+                        } — {log.task} — {log.additional_comments}
+                      </li>
+                    ))}
+                </ul>
+              )}
+            </div>
+          </>
+        )}
 
         <hr style={{ margin: '30px 0', borderColor: '#eee' }} />
       </div>

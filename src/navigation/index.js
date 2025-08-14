@@ -9,6 +9,7 @@ import EnterpriseLogs from "../Screens/EnterpriseLogs/EnterpriseLogs";
 import TaskLogs from "../Screens/TaskLogs";
 import MyLogs from "../Screens/MyLogs";
 import theme from "../theme";
+import MaintenanceSites from "../Screens/MaintenanceSites";
 
 const Navigation = ({ userGroups, userAttributes }) => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -51,6 +52,7 @@ const Navigation = ({ userGroups, userAttributes }) => {
         <div className={`navlinks ${menuOpen ? "open" : ""}`}>
           <Link className="navlink" to="/" onClick={() => setMenuOpen(false)} style={linkStyle}>Log Entry</Link>
           <Link className="navlink" to="/MyLogs" onClick={() => setMenuOpen(false)} style={linkStyle}>My Logs</Link>
+          <Link className="navlink" to="/MaintenanceSites" onClick={() => setMenuOpen(false)} style={linkStyle}>Maintenance</Link>          
           {isManager && (
             <Link className="navlink" to="/SiteTotals" onClick={() => { setMenuOpen(false); setLogsOpen(false); }} style={linkStyle}>Site Totals</Link>
           )}
@@ -64,8 +66,21 @@ const Navigation = ({ userGroups, userAttributes }) => {
                 <Link className="navlink" to="/EnterpriseLogs" onClick={() => { setMenuOpen(false); setLogsOpen(false); }} style={linkStyle}>Enterprise Logs</Link>
                 <Link className="navlink" to="/TaskLogs" onClick={() => { setMenuOpen(false); setLogsOpen(false); }} style={linkStyle}>Task Logs</Link>
               </div>
-            </div>
+            </div>            
           )}
+          
+          {isManager && ( //Navigation to Tableau Visual Dashboard
+          <a
+            className="navlink"
+            href="https://prod-useast-b.online.tableau.com/#/site/exactasystems/views/TechData/TechLogDashboard?:iid=2"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setMenuOpen(false)}
+            style={linkStyle}
+          >
+            Visual Data
+          </a>
+        )}
         </div>
       </nav>
 
@@ -76,6 +91,7 @@ const Navigation = ({ userGroups, userAttributes }) => {
         <Route path="/EnterpriseLogs" element={isManager ? <EnterpriseLogs userAttributes={userAttributes} /> : <Navigate to="/" />} />
         <Route path="/TaskLogs" element={isManager ? <TaskLogs userAttributes={userAttributes} /> : <Navigate to="/" />} />
         <Route path="/MyLogs" element={<MyLogs />} />
+        <Route path="/MaintenanceSites" element={<MaintenanceSites />} />
       </Routes>
     </Router>
   );

@@ -55,7 +55,7 @@ const MyLogs = () => {
         const firstNameFromEmail = email.split('@')[0].split('.')[0];
         setCurrentUserName(displayName);
 
-        const response = await fetch('https://i4xtrjux1j.execute-api.us-east-1.amazonaws.com/dev/submit-log');
+        const response = await fetch('https://z2h4sw2lg0.execute-api.us-east-1.amazonaws.com/prod/getTechDataLogs');
         const rawData = await response.json();
         const parsed = typeof rawData.body === 'string' ? JSON.parse(rawData.body) : rawData.body;
 
